@@ -112,7 +112,7 @@ namespace rocalution
 
     template <typename ValueType>
     void HIPAcceleratorMatrixMCSR<ValueType>::SetDataPtrMCSR(
-        int** row_offset, int** col, ValueType** val, int64_t nnz, int nrow, int ncol)
+        PtrType** row_offset, int** col, ValueType** val, int64_t nnz, int nrow, int ncol)
     {
         assert(nnz >= 0);
         assert(nrow >= 0);
@@ -140,7 +140,7 @@ namespace rocalution
     }
 
     template <typename ValueType>
-    void HIPAcceleratorMatrixMCSR<ValueType>::LeaveDataPtrMCSR(int**       row_offset,
+    void HIPAcceleratorMatrixMCSR<ValueType>::LeaveDataPtrMCSR(PtrType**   row_offset,
                                                                int**       col,
                                                                ValueType** val)
     {

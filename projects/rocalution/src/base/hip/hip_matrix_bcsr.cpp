@@ -163,7 +163,7 @@ namespace rocalution
     }
 
     template <typename ValueType>
-    void HIPAcceleratorMatrixBCSR<ValueType>::SetDataPtrBCSR(int**       row_offset,
+    void HIPAcceleratorMatrixBCSR<ValueType>::SetDataPtrBCSR(PtrType**   row_offset,
                                                              int**       col,
                                                              ValueType** val,
                                                              int64_t     nnzb,
@@ -203,7 +203,7 @@ namespace rocalution
     }
 
     template <typename ValueType>
-    void HIPAcceleratorMatrixBCSR<ValueType>::LeaveDataPtrBCSR(int**       row_offset,
+    void HIPAcceleratorMatrixBCSR<ValueType>::LeaveDataPtrBCSR(PtrType**   row_offset,
                                                                int**       col,
                                                                ValueType** val,
                                                                int&        blockdim)

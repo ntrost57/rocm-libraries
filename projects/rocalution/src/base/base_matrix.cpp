@@ -1294,7 +1294,7 @@ namespace rocalution
     }
 
     template <typename ValueType>
-    void BaseMatrix<ValueType>::SetDataPtrBCSR(int**       row_offset,
+    void BaseMatrix<ValueType>::SetDataPtrBCSR(PtrType**   row_offset,
                                                int**       col,
                                                ValueType** val,
                                                int64_t     nnzb,
@@ -1310,7 +1310,7 @@ namespace rocalution
     }
 
     template <typename ValueType>
-    void BaseMatrix<ValueType>::LeaveDataPtrBCSR(int**       row_offset,
+    void BaseMatrix<ValueType>::LeaveDataPtrBCSR(PtrType**   row_offset,
                                                  int**       col,
                                                  ValueType** val,
                                                  int&        blockdim)
@@ -1324,7 +1324,7 @@ namespace rocalution
 
     template <typename ValueType>
     void BaseMatrix<ValueType>::SetDataPtrMCSR(
-        int** row_offset, int** col, ValueType** val, int64_t nnz, int nrow, int ncol)
+        PtrType** row_offset, int** col, ValueType** val, int64_t nnz, int nrow, int ncol)
     {
         LOG_INFO("BaseMatrix<ValueType>::SetDataPtrMCSR(...)");
         LOG_INFO("Matrix format=" << _matrix_format_names[this->GetMatFormat()]);
@@ -1334,7 +1334,7 @@ namespace rocalution
     }
 
     template <typename ValueType>
-    void BaseMatrix<ValueType>::LeaveDataPtrMCSR(int** row_offset, int** col, ValueType** val)
+    void BaseMatrix<ValueType>::LeaveDataPtrMCSR(PtrType** row_offset, int** col, ValueType** val)
     {
         LOG_INFO("BaseMatrix<ValueType>::LeaveDataPtrMCSR(...)");
         LOG_INFO("Matrix format=" << _matrix_format_names[this->GetMatFormat()]);

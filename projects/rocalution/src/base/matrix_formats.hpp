@@ -62,11 +62,11 @@ namespace rocalution
     };
 
     // Sparse Matrix - Modified Sparse Compressed Row Format MCSR
-    template <typename ValueType, typename IndexType>
+    template <typename ValueType, typename IndexType, typename PointerType>
     struct MatrixMCSR
     {
         // Row offsets (row ptr)
-        IndexType* row_offset;
+        PointerType* row_offset;
 
         // Column index
         IndexType* col;
@@ -75,7 +75,7 @@ namespace rocalution
         ValueType* val;
     };
 
-    template <typename ValueType, typename IndexType, typename Index = IndexType>
+    template <typename ValueType, typename IndexType, typename PointerType, typename Index = IndexType>
     struct MatrixBCSR
     {
         // Number of block rows
@@ -89,7 +89,7 @@ namespace rocalution
         Index blockdim;
 
         // Row offsets (row ptr)
-        IndexType* row_offset;
+        PointerType* row_offset;
 
         // Column index
         IndexType* col;

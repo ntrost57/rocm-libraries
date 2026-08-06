@@ -48,8 +48,8 @@ namespace rocalution
         virtual void Clear(void);
         virtual void AllocateMCSR(int64_t nnz, int nrow, int ncol);
         virtual void SetDataPtrMCSR(
-            int** row_offset, int** col, ValueType** val, int64_t nnz, int nrow, int ncol);
-        virtual void LeaveDataPtrMCSR(int** row_offset, int** col, ValueType** val);
+            PtrType** row_offset, int** col, ValueType** val, int64_t nnz, int nrow, int ncol);
+        virtual void LeaveDataPtrMCSR(PtrType** row_offset, int** col, ValueType** val);
 
         virtual bool ConvertFrom(const BaseMatrix<ValueType>& mat);
 
@@ -69,7 +69,7 @@ namespace rocalution
                               BaseVector<ValueType>*       out) const;
 
     private:
-        MatrixMCSR<ValueType, int> mat_;
+        MatrixMCSR<ValueType, int, PtrType> mat_;
 
         friend class BaseVector<ValueType>;
         friend class AcceleratorVector<ValueType>;
