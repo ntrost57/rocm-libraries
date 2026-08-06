@@ -69,9 +69,9 @@ bool testing_uaamg(Arguments argus)
     LocalVector<T> e;
 
     // Generate A
-    int* csr_ptr = NULL;
-    int* csr_col = NULL;
-    T*   csr_val = NULL;
+    PtrType* csr_ptr = NULL;
+    int*     csr_col = NULL;
+    T*       csr_val = NULL;
 
     int nrow = 0;
     if(matrix_type == "Laplacian2D")
@@ -86,13 +86,13 @@ bool testing_uaamg(Arguments argus)
     {
         return false;
     }
-    int nnz = csr_ptr[nrow];
+    int64_t nnz = csr_ptr[nrow];
 
     T* csr_val2 = NULL;
     if(rebuildnumeric)
     {
         csr_val2 = new T[nnz];
-        for(int i = 0; i < nnz; i++)
+        for(int64_t i = 0; i < nnz; i++)
         {
             csr_val2[i] = csr_val[i];
         }

@@ -66,18 +66,18 @@ bool testing_pairwise_amg(Arguments argus)
     LocalVector<T> e;
 
     // Generate A
-    int* csr_ptr = NULL;
-    int* csr_col = NULL;
-    T*   csr_val = NULL;
+    PtrType* csr_ptr = NULL;
+    int*     csr_col = NULL;
+    T*       csr_val = NULL;
 
-    int nrow = gen_2d_laplacian(ndim, &csr_ptr, &csr_col, &csr_val);
-    int nnz  = csr_ptr[nrow];
+    int     nrow = gen_2d_laplacian(ndim, &csr_ptr, &csr_col, &csr_val);
+    int64_t nnz  = csr_ptr[nrow];
 
     T* csr_val2 = NULL;
     if(rebuildnumeric)
     {
         csr_val2 = new T[nnz];
-        for(int i = 0; i < nnz; i++)
+        for(int64_t i = 0; i < nnz; i++)
         {
             csr_val2[i] = csr_val[i];
         }
@@ -244,18 +244,18 @@ bool testing_pairwise_amg_2(Arguments argus)
     LocalVector<T> e;
 
     // Generate A
-    int* csr_ptr = NULL;
-    int* csr_col = NULL;
-    T*   csr_val = NULL;
+    PtrType* csr_ptr = NULL;
+    int*     csr_col = NULL;
+    T*       csr_val = NULL;
 
-    int nrow = gen_2d_laplacian(ndim, &csr_ptr, &csr_col, &csr_val);
-    int nnz  = csr_ptr[nrow];
+    int     nrow = gen_2d_laplacian(ndim, &csr_ptr, &csr_col, &csr_val);
+    int64_t nnz  = csr_ptr[nrow];
 
     T* csr_val2 = NULL;
     if(rebuildnumeric)
     {
         csr_val2 = new T[nnz];
-        for(int i = 0; i < nnz; i++)
+        for(int64_t i = 0; i < nnz; i++)
         {
             csr_val2[i] = csr_val[i];
         }
@@ -415,12 +415,12 @@ bool testing_pairwise_amg_3(Arguments argus)
     int ndim = argus.size;
 
     // Generate A
-    int* csr_ptr = NULL;
-    int* csr_col = NULL;
-    T*   csr_val = NULL;
+    PtrType* csr_ptr = NULL;
+    int*     csr_col = NULL;
+    T*       csr_val = NULL;
 
-    int nrow = gen_2d_laplacian(ndim, &csr_ptr, &csr_col, &csr_val);
-    int nnz  = csr_ptr[nrow];
+    int     nrow = gen_2d_laplacian(ndim, &csr_ptr, &csr_col, &csr_val);
+    int64_t nnz  = csr_ptr[nrow];
 
     T* csr_val2 = NULL;
 

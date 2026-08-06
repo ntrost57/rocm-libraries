@@ -37,14 +37,14 @@ void getTestMatrix(Arguments argus, LocalMatrix<T>& matrix)
     std::string matrix_type = argus.matrix_type;
 
     // Generate A
-    int* csr_ptr = NULL;
-    int* csr_col = NULL;
-    T*   csr_val = NULL;
+    PtrType* csr_ptr = NULL;
+    int*     csr_col = NULL;
+    T*       csr_val = NULL;
 
     int nrow = gen_2d_laplacian(size, &csr_ptr, &csr_col, &csr_val);
     int ncol = nrow;
 
-    int nnz = csr_ptr[nrow];
+    int64_t nnz = csr_ptr[nrow];
 
     matrix.SetDataPtrCSR(&csr_ptr, &csr_col, &csr_val, "TestMatrix", nnz, nrow, ncol);
 }

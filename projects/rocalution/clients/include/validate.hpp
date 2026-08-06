@@ -50,12 +50,12 @@ bool valid_permutation(int m, const int* permutation)
     return true;
 }
 
-bool valid_coloring(int        m,
-                    const int* csr_ptr,
-                    const int* csr_ind,
-                    int        num_colors,
-                    const int* size_colors,
-                    const int* permutation)
+bool valid_coloring(int            m,
+                    const PtrType* csr_ptr,
+                    const int*     csr_ind,
+                    int            num_colors,
+                    const int*     size_colors,
+                    const int*     permutation)
 {
     /*
     *   Create Inverse Permutation
@@ -83,7 +83,7 @@ bool valid_coloring(int        m,
         {
             const int parent_node = p_inverse[j];
 
-            for(int k = csr_ptr[parent_node]; k < csr_ptr[parent_node + 1]; k++)
+            for(PtrType k = csr_ptr[parent_node]; k < csr_ptr[parent_node + 1]; k++)
             {
                 const int adj_node = csr_ind[k];
 

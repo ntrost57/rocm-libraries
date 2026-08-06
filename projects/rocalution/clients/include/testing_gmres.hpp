@@ -53,9 +53,9 @@ bool testing_gmres(Arguments argus, bool expectConvergence = true)
     LocalVector<T> e;
 
     // Generate A
-    int* csr_ptr = NULL;
-    int* csr_col = NULL;
-    T*   csr_val = NULL;
+    PtrType* csr_ptr = NULL;
+    int*     csr_col = NULL;
+    T*       csr_val = NULL;
 
     int nrow = 0;
     if(matrix == "laplacian")
@@ -65,7 +65,7 @@ bool testing_gmres(Arguments argus, bool expectConvergence = true)
     else
         return false;
 
-    int nnz = csr_ptr[nrow];
+    int64_t nnz = csr_ptr[nrow];
 
     A.SetDataPtrCSR(&csr_ptr, &csr_col, &csr_val, "A", nnz, nrow, nrow);
 

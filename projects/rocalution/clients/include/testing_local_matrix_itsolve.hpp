@@ -61,9 +61,9 @@ bool testing_local_matrix_itlusolve(Arguments argus)
     LocalVector<T> e;
 
     // Generate A
-    int* csr_ptr = NULL;
-    int* csr_col = NULL;
-    T*   csr_val = NULL;
+    PtrType* csr_ptr = NULL;
+    int*     csr_col = NULL;
+    T*       csr_val = NULL;
 
     int nrow = 0;
     int ncol = 0;
@@ -71,7 +71,7 @@ bool testing_local_matrix_itlusolve(Arguments argus)
     nrow = gen_2d_laplacian(size, &csr_ptr, &csr_col, &csr_val);
     ncol = nrow;
 
-    int nnz = csr_ptr[nrow];
+    int64_t nnz = csr_ptr[nrow];
 
     assert(csr_ptr != NULL);
     assert(csr_col != NULL);
@@ -162,9 +162,9 @@ bool testing_local_matrix_itllsolve(Arguments argus)
     LocalVector<T> e;
 
     // Generate A
-    int* csr_ptr = NULL;
-    int* csr_col = NULL;
-    T*   csr_val = NULL;
+    PtrType* csr_ptr = NULL;
+    int*     csr_col = NULL;
+    T*       csr_val = NULL;
 
     int nrow = 0;
     int ncol = 0;
@@ -172,7 +172,7 @@ bool testing_local_matrix_itllsolve(Arguments argus)
     nrow = gen_2d_laplacian(size, &csr_ptr, &csr_col, &csr_val);
     ncol = nrow;
 
-    int nnz = csr_ptr[nrow];
+    int64_t nnz = csr_ptr[nrow];
 
     assert(csr_ptr != NULL);
     assert(csr_col != NULL);
@@ -277,9 +277,9 @@ bool testing_local_matrix_itlsolve(Arguments argus)
     LocalVector<T> e;
 
     // Generate A
-    int* csr_ptr = NULL;
-    int* csr_col = NULL;
-    T*   csr_val = NULL;
+    PtrType* csr_ptr = NULL;
+    int*     csr_col = NULL;
+    T*       csr_val = NULL;
 
     int nrow = 0;
     int ncol = 0;
@@ -287,7 +287,7 @@ bool testing_local_matrix_itlsolve(Arguments argus)
     nrow = gen_2d_laplacian(size, &csr_ptr, &csr_col, &csr_val);
     ncol = nrow;
 
-    int nnz = csr_ptr[nrow];
+    int64_t nnz = csr_ptr[nrow];
 
     assert(csr_ptr != NULL);
     assert(csr_col != NULL);
@@ -386,9 +386,9 @@ bool testing_local_matrix_itusolve(Arguments argus)
     LocalVector<T> e;
 
     // Generate A
-    int* csr_ptr = NULL;
-    int* csr_col = NULL;
-    T*   csr_val = NULL;
+    PtrType* csr_ptr = NULL;
+    int*     csr_col = NULL;
+    T*       csr_val = NULL;
 
     int nrow = 0;
     int ncol = 0;
@@ -396,7 +396,7 @@ bool testing_local_matrix_itusolve(Arguments argus)
     nrow = gen_2d_laplacian(size, &csr_ptr, &csr_col, &csr_val);
     ncol = nrow;
 
-    int nnz = csr_ptr[nrow];
+    int64_t nnz = csr_ptr[nrow];
 
     assert(csr_ptr != NULL);
     assert(csr_col != NULL);

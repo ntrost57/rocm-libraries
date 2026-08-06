@@ -49,9 +49,9 @@ bool testing_mixed_precision(Arguments argus)
     LocalVector<T> rhs;
 
     // Generate A
-    int* csr_ptr = NULL;
-    int* csr_col = NULL;
-    T*   csr_val = NULL;
+    PtrType* csr_ptr = NULL;
+    int*     csr_col = NULL;
+    T*       csr_val = NULL;
 
     int nrow = 0;
     int ncol = 0;
@@ -66,13 +66,13 @@ bool testing_mixed_precision(Arguments argus)
         disable_accelerator_rocalution(false);
         return true;
     }
-    int nnz = csr_ptr[nrow];
+    int64_t nnz = csr_ptr[nrow];
 
     T* csr_val2 = NULL;
     if(rebuildnumeric)
     {
         csr_val2 = new T[nnz];
-        for(int i = 0; i < nnz; i++)
+        for(int64_t i = 0; i < nnz; i++)
         {
             csr_val2[i] = csr_val[i];
         }
