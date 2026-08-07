@@ -1,0 +1,32 @@
+{
+    "matrix": "/path/to/matrix.mtx",
+    "matrix_format": "mtx",
+    "omp_threads": 0,
+    "rhs": "ones",
+    "initial_guess": "zeros",
+
+    "name": "amg",
+    "solver": "FGMRES",
+    "preconditioner": "AMG",
+    "amg_type": ["SA"],
+    "coarsening_strategy": "PMIS",
+    "coupling_strength": [0.001, 0.01],
+    "interp_relax": [0.67],
+    "lumping_strategy": "AddWeakConnections",
+
+    "cycle": ["V"],
+    "pre_smooth_iter": [1, 2],
+    "post_smooth_iter": [1, 2],
+    "coarsest_level": [20],
+    "host_levels": 2,
+
+    "smoother": ["Jacobi"],
+    "coarse_solver": ["LU"],
+
+    "abs_tol": 1e-8,
+    "rel_tol": 1e-8,
+    "div_tol": 1e8,
+    "max_iter": 100,
+
+    "repeats": 5
+}
