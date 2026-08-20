@@ -78,6 +78,21 @@ add_rocalution_example(tns.cpp)
 add_rocalution_example(var-precond.cpp)
 add_rocalution_example(itsolve.cpp)
 
+# Optimization box: a two-source sample (driver + solver piece). The add_rocalution_example
+# helper only takes a single source, so this target is set up explicitly with the same
+# include dirs / link / staging output.
+add_executable(rocalution_opt rocalution_opt.cpp rocalution_solver.cpp ${ROCALUTION_CLIENTS_COMMON})
+target_include_directories(rocalution_opt PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>)
+target_link_libraries(rocalution_opt PRIVATE roc::rocalution)
+if (BUILD_CODE_COVERAGE)
+  target_link_libraries(rocalution_opt PRIVATE -lgcov)
+endif()
+if(NOT TARGET rocalution)
+  set_target_properties(rocalution_opt PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/staging")
+else()
+  set_target_properties(rocalution_opt PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/clients/staging")
+endif()
+
 # MPI examples
 if(SUPPORT_MPI)
   add_rocalution_example(benchmark_mpi.cpp)
