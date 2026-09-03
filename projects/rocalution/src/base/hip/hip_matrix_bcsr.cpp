@@ -743,7 +743,7 @@ namespace rocalution
             // Determine whether we are using row or column major for the blocks
             rocsparse_direction dir
                 = BCSR_IND_BASE ? rocsparse_direction_row : rocsparse_direction_column;
-
+/*
             // Create buffer, if not already available
             size_t buffer_size = 0;
             status             = rocsparseTbsrilu0_buffer_size(
@@ -802,6 +802,7 @@ namespace rocalution
             status = rocsparse_bsrilu0_clear(
                 ROCSPARSE_HANDLE(this->local_backend_.ROC_sparse_handle), this->mat_info_);
             CHECK_ROCSPARSE_ERROR(status, __FILE__, __LINE__);
+            */
         }
 
         return true;
@@ -854,7 +855,7 @@ namespace rocalution
         // Determine whether we are using row or column major for the blocks
         rocsparse_direction dir
             = BCSR_IND_BASE ? rocsparse_direction_row : rocsparse_direction_column;
-
+/*
         // Create buffer, if not already available
         size_t buffer_size = 0;
         status
@@ -914,7 +915,7 @@ namespace rocalution
                                           rocsparse_solve_policy_auto,
                                           this->mat_buffer_);
         CHECK_ROCSPARSE_ERROR(status, __FILE__, __LINE__);
-
+*/
         // Allocate temporary vector
         this->tmp_vec_->Allocate(this->nrow_);
     }
@@ -1005,7 +1006,7 @@ namespace rocalution
             // Determine whether we are using row or column major for the blocks
             rocsparse_direction dir
                 = BCSR_IND_BASE ? rocsparse_direction_row : rocsparse_direction_column;
-
+/*
             // Solve L
             status = rocsparseTbsrsv(ROCSPARSE_HANDLE(this->local_backend_.ROC_sparse_handle),
                                      dir,
@@ -1043,6 +1044,7 @@ namespace rocalution
                                      rocsparse_solve_policy_auto,
                                      this->mat_buffer_);
             CHECK_ROCSPARSE_ERROR(status, __FILE__, __LINE__);
+            */
         }
 
         return true;
@@ -1082,7 +1084,7 @@ namespace rocalution
         // Create buffer, if not already available
         size_t buffer_size_L  = 0;
         size_t buffer_size_Lt = 0;
-
+/*
         status
             = rocsparseTbsrsv_buffer_size(ROCSPARSE_HANDLE(this->local_backend_.ROC_sparse_handle),
                                           dir,
@@ -1112,7 +1114,7 @@ namespace rocalution
                                           this->mat_info_,
                                           &buffer_size_Lt);
         CHECK_ROCSPARSE_ERROR(status, __FILE__, __LINE__);
-
+*/
         size_t buffer_size = std::max(buffer_size_L, buffer_size_Lt);
 
         // Buffer is shared with ILU0, IC0 and other solve functions
@@ -1130,7 +1132,7 @@ namespace rocalution
 
         assert(this->mat_buffer_size_ >= buffer_size);
         assert(this->mat_buffer_ != NULL);
-
+/*
         // L part analysis
         status = rocsparseTbsrsv_analysis(ROCSPARSE_HANDLE(this->local_backend_.ROC_sparse_handle),
                                           dir,
@@ -1164,7 +1166,7 @@ namespace rocalution
                                           rocsparse_solve_policy_auto,
                                           this->mat_buffer_);
         CHECK_ROCSPARSE_ERROR(status, __FILE__, __LINE__);
-
+*/
         // Allocate temporary vector
         this->tmp_vec_->Allocate(this->nrow_);
     }
@@ -1241,7 +1243,7 @@ namespace rocalution
             // Determine whether we are using row or column major for the blocks
             rocsparse_direction dir
                 = BCSR_IND_BASE ? rocsparse_direction_row : rocsparse_direction_column;
-
+/*
             // Solve L
             status = rocsparseTbsrsv(ROCSPARSE_HANDLE(this->local_backend_.ROC_sparse_handle),
                                      dir,
@@ -1279,6 +1281,7 @@ namespace rocalution
                                      rocsparse_solve_policy_auto,
                                      this->mat_buffer_);
             CHECK_ROCSPARSE_ERROR(status, __FILE__, __LINE__);
+            */
         }
 
         return true;
@@ -1327,6 +1330,7 @@ namespace rocalution
 
         // Create buffer, if not already available
         size_t buffer_size = 0;
+        /*
         status
             = rocsparseTbsrsv_buffer_size(ROCSPARSE_HANDLE(this->local_backend_.ROC_sparse_handle),
                                           dir,
@@ -1340,7 +1344,7 @@ namespace rocalution
                                           this->mat_.blockdim,
                                           this->mat_info_,
                                           &buffer_size);
-
+*/
         // Buffer is shared with ILU0 and other solve functions
         if(this->mat_buffer_ == NULL)
         {
@@ -1350,7 +1354,7 @@ namespace rocalution
 
         assert(this->mat_buffer_size_ >= buffer_size);
         assert(this->mat_buffer_ != NULL);
-
+/*
         status = rocsparseTbsrsv_analysis(ROCSPARSE_HANDLE(this->local_backend_.ROC_sparse_handle),
                                           dir,
                                           rocsparse_operation_none,
@@ -1366,6 +1370,7 @@ namespace rocalution
                                           rocsparse_solve_policy_auto,
                                           this->mat_buffer_);
         CHECK_ROCSPARSE_ERROR(status, __FILE__, __LINE__);
+        */
     }
 
     template <typename ValueType>
@@ -1400,7 +1405,7 @@ namespace rocalution
         // Determine whether we are using row or column major for the blocks
         rocsparse_direction dir
             = BCSR_IND_BASE ? rocsparse_direction_row : rocsparse_direction_column;
-
+/*
         // Create buffer, if not already available
         size_t buffer_size = 0;
         status
@@ -1442,6 +1447,7 @@ namespace rocalution
                                           rocsparse_solve_policy_auto,
                                           this->mat_buffer_);
         CHECK_ROCSPARSE_ERROR(status, __FILE__, __LINE__);
+        */
     }
 
     template <typename ValueType>
@@ -1540,7 +1546,7 @@ namespace rocalution
             // Determine whether we are using row or column major for the blocks
             rocsparse_direction dir
                 = BCSR_IND_BASE ? rocsparse_direction_row : rocsparse_direction_column;
-
+/*
             // Solve L
             status = rocsparseTbsrsv(ROCSPARSE_HANDLE(this->local_backend_.ROC_sparse_handle),
                                      dir,
@@ -1559,6 +1565,7 @@ namespace rocalution
                                      rocsparse_solve_policy_auto,
                                      this->mat_buffer_);
             CHECK_ROCSPARSE_ERROR(status, __FILE__, __LINE__);
+            */
         }
 
         return true;
@@ -1596,7 +1603,7 @@ namespace rocalution
             // Determine whether we are using row or column major for the blocks
             rocsparse_direction dir
                 = BCSR_IND_BASE ? rocsparse_direction_row : rocsparse_direction_column;
-
+/*
             // Solve U
             status = rocsparseTbsrsv(ROCSPARSE_HANDLE(this->local_backend_.ROC_sparse_handle),
                                      dir,
@@ -1615,6 +1622,7 @@ namespace rocalution
                                      rocsparse_solve_policy_auto,
                                      this->mat_buffer_);
             CHECK_ROCSPARSE_ERROR(status, __FILE__, __LINE__);
+            */
         }
 
         return true;
@@ -1645,7 +1653,7 @@ namespace rocalution
             // Determine whether we are using row or column major for the blocks
             rocsparse_direction dir
                 = BCSR_IND_BASE ? rocsparse_direction_row : rocsparse_direction_column;
-
+/*
             rocsparse_status status;
             status = rocsparseTbsrmv(ROCSPARSE_HANDLE(this->local_backend_.ROC_sparse_handle),
                                      dir,
@@ -1663,6 +1671,7 @@ namespace rocalution
                                      &beta,
                                      cast_out->vec_);
             CHECK_ROCSPARSE_ERROR(status, __FILE__, __LINE__);
+            */
         }
     }
 
@@ -1691,7 +1700,7 @@ namespace rocalution
             // Determine whether we are using row or column major for the blocks
             rocsparse_direction dir
                 = BCSR_IND_BASE ? rocsparse_direction_row : rocsparse_direction_column;
-
+/*
             rocsparse_status status;
             status = rocsparseTbsrmv(ROCSPARSE_HANDLE(this->local_backend_.ROC_sparse_handle),
                                      dir,
@@ -1709,6 +1718,7 @@ namespace rocalution
                                      &beta,
                                      cast_out->vec_);
             CHECK_ROCSPARSE_ERROR(status, __FILE__, __LINE__);
+            */
         }
     }
 

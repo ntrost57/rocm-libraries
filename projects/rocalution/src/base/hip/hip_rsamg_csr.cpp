@@ -741,6 +741,13 @@ namespace rocalution
         }
         CHECK_HIP_ERROR(__FILE__, __LINE__);
 
+        cast_pi->CreateSpMatDescr_();
+
+        if(global == true)
+        {
+            cast_pg->CreateSpMatDescr_();
+        }
+
         return true;
     }
 
@@ -1419,6 +1426,13 @@ namespace rocalution
             return false;
         }
         CHECK_HIP_ERROR(__FILE__, __LINE__);
+
+        cast_pi->CreateSpMatDescr_();
+
+        if(global == true)
+        {
+            cast_pg->CreateSpMatDescr_();
+        }
 
         return true;
     }

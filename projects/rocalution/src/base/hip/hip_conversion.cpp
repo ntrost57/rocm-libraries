@@ -65,7 +65,8 @@ namespace rocalution
             nnz, src.col, dst->col, true, HIPSTREAM(_get_backend_descriptor()->HIP_stream_current));
         copy_d2d(
             nnz, src.val, dst->val, true, HIPSTREAM(_get_backend_descriptor()->HIP_stream_current));
-
+        FATAL_ERROR(__FILE__, __LINE__);
+/*
         rocsparse_status status = rocsparse_csr2coo(ROCSPARSE_HANDLE(backend->ROC_sparse_handle),
                                                     src.row_offset,
                                                     nnz,
@@ -73,7 +74,7 @@ namespace rocalution
                                                     dst->row,
                                                     rocsparse_index_base_zero);
         CHECK_ROCSPARSE_ERROR(status, __FILE__, __LINE__);
-
+*/
         // Sync memcopy
         DISCARD_HIP_ERROR(hipDeviceSynchronize());
         CHECK_HIP_ERROR(__FILE__, __LINE__);
@@ -104,7 +105,8 @@ namespace rocalution
             nnz, src.col, dst->col, true, HIPSTREAM(_get_backend_descriptor()->HIP_stream_current));
         copy_d2d(
             nnz, src.val, dst->val, true, HIPSTREAM(_get_backend_descriptor()->HIP_stream_current));
-
+        FATAL_ERROR(__FILE__, __LINE__);
+/*
         rocsparse_status status = rocsparse_coo2csr(ROCSPARSE_HANDLE(backend->ROC_sparse_handle),
                                                     src.row,
                                                     nnz,
@@ -112,7 +114,7 @@ namespace rocalution
                                                     dst->row_offset,
                                                     rocsparse_index_base_zero);
         CHECK_ROCSPARSE_ERROR(status, __FILE__, __LINE__);
-
+*/
         // Sync memcopy
         DISCARD_HIP_ERROR(hipDeviceSynchronize());
         CHECK_HIP_ERROR(__FILE__, __LINE__);
@@ -156,7 +158,8 @@ namespace rocalution
             = BCSR_IND_BASE ? rocsparse_direction_row : rocsparse_direction_column;
 
         allocate_hip(mb + 1, &dst->row_offset);
-
+        FATAL_ERROR(__FILE__, __LINE__);
+/*
         rocsparse_status status
             = rocsparse_csr2bsr_nnz(ROCSPARSE_HANDLE(backend->ROC_sparse_handle),
                                     dir,
@@ -170,10 +173,11 @@ namespace rocalution
                                     dst->row_offset,
                                     &nnzb);
         CHECK_ROCSPARSE_ERROR(status, __FILE__, __LINE__);
-
+*/
         allocate_hip(nnzb, &dst->col);
         allocate_hip(nnzb * blockdim * blockdim, &dst->val);
-
+        FATAL_ERROR(__FILE__, __LINE__);
+/*
         status = rocsparseTcsr2bsr(ROCSPARSE_HANDLE(backend->ROC_sparse_handle),
                                    dir,
                                    nrow,
@@ -188,7 +192,7 @@ namespace rocalution
                                    dst->row_offset,
                                    dst->col);
         CHECK_ROCSPARSE_ERROR(status, __FILE__, __LINE__);
-
+*/
         dst->nrowb = mb;
         dst->ncolb = nb;
         dst->nnzb  = nnzb;
@@ -230,7 +234,8 @@ namespace rocalution
 
         rocsparse_direction dir
             = BCSR_IND_BASE ? rocsparse_direction_row : rocsparse_direction_column;
-
+        FATAL_ERROR(__FILE__, __LINE__);
+/*
         rocsparse_status status = rocsparseTbsr2csr(ROCSPARSE_HANDLE(backend->ROC_sparse_handle),
                                                     dir,
                                                     src.nrowb,
@@ -241,11 +246,11 @@ namespace rocalution
                                                     src.col,
                                                     blockdim,
                                                     dst_descr,
-                                                    dst->val /*csr_val*/,
-                                                    dst->row_offset /*csr_row_offset*/,
-                                                    dst->col /*csr_col_ind*/);
+                                                    dst->val,
+                                                    dst->row_offset,
+                                                    dst->col);
         CHECK_ROCSPARSE_ERROR(status, __FILE__, __LINE__);
-
+*/
         // // Compress the output CSR matrix
         // IndexType nnz_C;
         // IndexType* nnz_per_row = NULL;
@@ -300,7 +305,8 @@ namespace rocalution
         assert(dst_descr != NULL);
 
         rocsparse_status status;
-
+        FATAL_ERROR(__FILE__, __LINE__);
+/*
         // Determine ELL width
         status = rocsparse_csr2ell_width(ROCSPARSE_HANDLE(backend->ROC_sparse_handle),
                                          nrow,
@@ -309,7 +315,7 @@ namespace rocalution
                                          dst_descr,
                                          &dst->max_row);
         CHECK_ROCSPARSE_ERROR(status, __FILE__, __LINE__);
-
+*/
         // Synchronize stream to make sure, result is available on the host
         DISCARD_HIP_ERROR(
             hipStreamSynchronize(HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)));
@@ -327,7 +333,8 @@ namespace rocalution
         // Allocate ELL matrix
         allocate_hip(*nnz_ell, &dst->col);
         allocate_hip(*nnz_ell, &dst->val);
-
+        FATAL_ERROR(__FILE__, __LINE__);
+/*
         // Conversion
         status = rocsparseTcsr2ell(ROCSPARSE_HANDLE(backend->ROC_sparse_handle),
                                    nrow,
@@ -340,7 +347,7 @@ namespace rocalution
                                    dst->val,
                                    dst->col);
         CHECK_ROCSPARSE_ERROR(status, __FILE__, __LINE__);
-
+*/
         return true;
     }
 
@@ -372,6 +379,8 @@ namespace rocalution
 
         // Determine CSR nnz
         IndexType nnz32;
+        FATAL_ERROR(__FILE__, __LINE__);
+        /*
         status = rocsparse_ell2csr_nnz(ROCSPARSE_HANDLE(backend->ROC_sparse_handle),
                                        nrow,
                                        ncol,
@@ -382,7 +391,7 @@ namespace rocalution
                                        dst->row_offset,
                                        &nnz32);
         CHECK_ROCSPARSE_ERROR(status, __FILE__, __LINE__);
-
+*/
         assert(nnz32 <= std::numeric_limits<IndexType>::max());
 
         *nnz_csr = nnz32;
@@ -396,7 +405,8 @@ namespace rocalution
         // Allocate CSR column and value structures
         allocate_hip(*nnz_csr, &dst->col);
         allocate_hip(*nnz_csr, &dst->val);
-
+        FATAL_ERROR(__FILE__, __LINE__);
+/*
         // Conversion
         status = rocsparseTell2csr(ROCSPARSE_HANDLE(backend->ROC_sparse_handle),
                                    nrow,
@@ -410,7 +420,7 @@ namespace rocalution
                                    dst->row_offset,
                                    dst->col);
         CHECK_ROCSPARSE_ERROR(status, __FILE__, __LINE__);
-
+*/
         return true;
     }
 
@@ -703,7 +713,8 @@ namespace rocalution
         assert(src_descr != NULL);
 
         allocate_hip(nrow * ncol, &dst->val);
-
+        FATAL_ERROR(__FILE__, __LINE__);
+/*
         if(DENSE_IND_BASE == 0)
         {
             rocsparse_status status
@@ -759,7 +770,7 @@ namespace rocalution
 
             free_hip(&temp);
         }
-
+*/
         // Sync memcopy
         DISCARD_HIP_ERROR(hipDeviceSynchronize());
         CHECK_HIP_ERROR(__FILE__, __LINE__);
@@ -791,7 +802,8 @@ namespace rocalution
             rocsparse_status status;
 
             allocate_hip(nrow, &nnz_per_row);
-
+        FATAL_ERROR(__FILE__, __LINE__);
+/*
             status = rocsparseTnnz(ROCSPARSE_HANDLE(backend->ROC_sparse_handle),
                                    rocsparse_direction_row,
                                    nrow,
@@ -818,7 +830,7 @@ namespace rocalution
                                          dst->row_offset,
                                          nnz_total == 0 ? (IndexType*)0x4 : dst->col);
             CHECK_ROCSPARSE_ERROR(status, __FILE__, __LINE__);
-
+*/
             free_hip(&nnz_per_row);
         }
         else
@@ -851,7 +863,8 @@ namespace rocalution
             allocate_hip(nrow, &nnz_per_row);
 
             rocsparse_status sparse_status;
-
+        FATAL_ERROR(__FILE__, __LINE__);
+/*
             sparse_status = rocsparseTnnz(ROCSPARSE_HANDLE(backend->ROC_sparse_handle),
                                           rocsparse_direction_row,
                                           nrow,
@@ -878,7 +891,7 @@ namespace rocalution
                                                 dst->row_offset,
                                                 nnz_total == 0 ? (IndexType*)0x4 : dst->col);
             CHECK_ROCSPARSE_ERROR(sparse_status, __FILE__, __LINE__);
-
+*/
             free_hip(&temp);
             free_hip(&nnz_per_row);
         }

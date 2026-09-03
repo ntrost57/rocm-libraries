@@ -76,9 +76,26 @@ namespace rocalution
                               BaseVector<ValueType>*       out) const;
 
     private:
+        void CreateSpMatDescr_(void);
+        void DestroySpMatDescr_(void);
+        void ApplyAnalyse_(ValueType alpha,
+                           rocsparse_const_dnvec_descr x,
+                           ValueType beta,
+                           rocsparse_dnvec_descr y) const;
+        void ApplyAnalyseClear_(void);
+
         MatrixELL<ValueType, int> mat_;
 
+        rocsparse_spmat_descr spmat_descr_;
         rocsparse_mat_descr mat_descr_;
+
+        mutable rocsparse_spmv_descr spmv_descr_;
+
+        // Matrix buffer (spmv)
+        mutable size_t spmv_buffer_size_;
+        mutable char* spmv_buffer_;
+
+        mutable bool spmv_analyzed_;
 
         friend class HIPAcceleratorMatrixCSR<ValueType>;
 

@@ -29,28 +29,28 @@
 namespace rocalution
 {
 
-    template <unsigned int WF_SIZE, typename ValueType, typename IndexType>
-    __global__ void kernel_mcsr_spmv(IndexType nrow,
-                                     const IndexType* __restrict__ row_offset,
-                                     const IndexType* __restrict__ col,
-                                     const ValueType* __restrict__ val,
-                                     const ValueType* __restrict__ in,
-                                     ValueType* __restrict__ out)
+    template <unsigned int WF_SIZE, typename T, typename I, typename J>
+    __global__ void kernel_mcsr_spmv(I nrow,
+                                     const J* __restrict__ row_offset,
+                                     const I* __restrict__ col,
+                                     const T* __restrict__ val,
+                                     const T* __restrict__ in,
+                                     T* __restrict__ out)
     {
-        IndexType gid    = hipBlockIdx_x * hipBlockDim_x + hipThreadIdx_x;
-        IndexType tid    = hipThreadIdx_x;
-        IndexType laneid = tid & (WF_SIZE - 1);
-        IndexType warpid = gid / WF_SIZE;
-        IndexType nwarps = hipGridDim_x * hipBlockDim_x / WF_SIZE;
+        const int gid    = hipBlockIdx_x * hipBlockDim_x + hipThreadIdx_x;
+        const int tid    = hipThreadIdx_x;
+        const int laneid = tid & (WF_SIZE - 1);
+        const int warpid = gid / WF_SIZE;
+        const int nwarps = hipGridDim_x * hipBlockDim_x / WF_SIZE;
 
-        for(IndexType ai = warpid; ai < nrow; ai += nwarps)
+        for(I ai = warpid; ai < nrow; ai += nwarps)
         {
-            IndexType row_start = row_offset[ai];
-            IndexType row_end   = row_offset[ai + 1];
+            J row_start = row_offset[ai];
+            J row_end   = row_offset[ai + 1];
 
-            ValueType sum = static_cast<ValueType>(0);
+            T sum = static_cast<T>(0);
 
-            for(IndexType aj = row_start + laneid; aj < row_end; aj += WF_SIZE)
+            for(J aj = row_start + laneid; aj < row_end; aj += WF_SIZE)
             {
                 sum = sum + val[aj] * in[col[aj]];
             }
@@ -64,26 +64,26 @@ namespace rocalution
         }
     }
 
-    template <unsigned int WF_SIZE, typename ValueType, typename IndexType>
-    __global__ void kernel_mcsr_add_spmv(IndexType nrow,
-                                         const IndexType* __restrict__ row_offset,
-                                         const IndexType* __restrict__ col,
-                                         const ValueType* __restrict__ val,
-                                         ValueType scalar,
-                                         const ValueType* __restrict__ in,
-                                         ValueType* __restrict__ out)
+    template <unsigned int WF_SIZE, typename T, typename I, typename J>
+    __global__ void kernel_mcsr_add_spmv(I nrow,
+                                         const J* __restrict__ row_offset,
+                                         const I* __restrict__ col,
+                                         const T* __restrict__ val,
+                                         T scalar,
+                                         const T* __restrict__ in,
+                                         T* __restrict__ out)
     {
-        IndexType gid    = hipBlockIdx_x * hipBlockDim_x + hipThreadIdx_x;
-        IndexType tid    = hipThreadIdx_x;
-        IndexType laneid = tid % WF_SIZE;
-        IndexType warpid = gid / WF_SIZE;
-        IndexType nwarps = hipGridDim_x * hipBlockDim_x / WF_SIZE;
+        const int gid    = hipBlockIdx_x * hipBlockDim_x + hipThreadIdx_x;
+        const int tid    = hipThreadIdx_x;
+        const int laneid = tid % WF_SIZE;
+        const int warpid = gid / WF_SIZE;
+        const int nwarps = hipGridDim_x * hipBlockDim_x / WF_SIZE;
 
-        for(IndexType ai = warpid; ai < nrow; ai += nwarps)
+        for(I ai = warpid; ai < nrow; ai += nwarps)
         {
-            ValueType sum = static_cast<ValueType>(0);
+            T sum = static_cast<T>(0);
 
-            for(IndexType aj = row_offset[ai] + laneid; aj < row_offset[ai + 1]; aj += WF_SIZE)
+            for(J aj = row_offset[ai] + laneid; aj < row_offset[ai + 1]; aj += WF_SIZE)
             {
                 sum = sum + scalar * val[aj] * in[col[aj]];
             }

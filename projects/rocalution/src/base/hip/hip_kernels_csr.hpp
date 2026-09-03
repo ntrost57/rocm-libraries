@@ -298,7 +298,7 @@ namespace rocalution
     // Calculates the number of non-zero elements per row
     template <typename I, typename J>
     __global__ void
-        kernel_calc_row_nnz(I nrow, const J* __restrict__ row_offset, I* __restrict__ row_nnz)
+        kernel_calc_row_nnz(I nrow, const J* __restrict__ row_offset, J* __restrict__ row_nnz)
     {
         I ai = blockIdx.x * blockDim.x + threadIdx.x;
 

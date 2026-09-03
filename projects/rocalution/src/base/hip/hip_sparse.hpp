@@ -29,9 +29,70 @@
 
 namespace rocalution
 {
+    // ValueType to rocsparse_datatype, with a compile time flag for the value types
+    // rocSPARSE has no datatype for (e.g. bool and int64_t, which rocALUTION does
+    // instantiate its vectors with). The primary template carries a valid value so
+    // that it stays usable in a non-discarded context.
+    template <typename ValueType>
+    struct rocsparse_datatype_traits
+    {
+        static constexpr bool               is_supported = false;
+        static constexpr rocsparse_datatype value        = rocsparse_datatype_f32_r;
+    };
+
+    template <>
+    struct rocsparse_datatype_traits<float>
+    {
+        static constexpr bool               is_supported = true;
+        static constexpr rocsparse_datatype value        = rocsparse_datatype_f32_r;
+    };
+
+    template <>
+    struct rocsparse_datatype_traits<double>
+    {
+        static constexpr bool               is_supported = true;
+        static constexpr rocsparse_datatype value        = rocsparse_datatype_f64_r;
+    };
+
+    template <>
+    struct rocsparse_datatype_traits<std::complex<float>>
+    {
+        static constexpr bool               is_supported = true;
+        static constexpr rocsparse_datatype value        = rocsparse_datatype_f32_c;
+    };
+
+    template <>
+    struct rocsparse_datatype_traits<std::complex<double>>
+    {
+        static constexpr bool               is_supported = true;
+        static constexpr rocsparse_datatype value        = rocsparse_datatype_f64_c;
+    };
+
+    template <>
+    struct rocsparse_datatype_traits<int32_t>
+    {
+        static constexpr bool               is_supported = true;
+        static constexpr rocsparse_datatype value        = rocsparse_datatype_i32_r;
+    };
+
     // ValueType to rocsparse_datatype
     template <typename ValueType>
     rocsparse_datatype rocsparseTdatatype();
+
+    template <typename IndexType>
+    struct rocsparse_indextype_traits;
+
+    template <>
+    struct rocsparse_indextype_traits<int32_t>
+    {
+        static constexpr rocsparse_indextype value = rocsparse_indextype_i32;
+    };
+    
+    template <>
+    struct rocsparse_indextype_traits<int64_t>
+    {
+        static constexpr rocsparse_indextype value = rocsparse_indextype_i64;
+    };
 
     // rocsparse csrmv analysis
     template <typename ValueType>

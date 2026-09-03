@@ -66,7 +66,16 @@ namespace rocalution
         this->mat_.val = NULL;
         this->set_backend(local_backend);
 
+        this->spmat_descr_ = 0;
+
+        this->spmv_descr_ = 0;
+
         this->mat_descr_ = 0;
+
+        this->spmv_buffer_size_ = 0;
+        this->spmv_buffer_      = NULL;
+
+        this->spmv_analyzed_ = false;
 
         CHECK_HIP_ERROR(__FILE__, __LINE__);
 
@@ -80,6 +89,42 @@ namespace rocalution
 
         status = rocsparse_set_mat_type(this->mat_descr_, rocsparse_matrix_type_general);
         CHECK_ROCSPARSE_ERROR(status, __FILE__, __LINE__);
+    }
+
+    template <typename ValueType>
+    void HIPAcceleratorMatrixCOO<ValueType>::CreateSpMatDescr_(void)
+    {
+        this->DestroySpMatDescr_();
+
+        if(this->nnz_ >= 0)
+        {
+            rocsparse_status status
+                = rocsparse_create_coo_descr(&this->spmat_descr_,
+                                             this->nrow_,
+                                             this->ncol_,
+                                             this->nnz_,
+                                             this->mat_.row,
+                                             this->mat_.col,
+                                             this->mat_.val,
+                                             rocsparse_indextype_i32,
+                                             rocsparse_index_base_zero,
+                                             rocsparse_datatype_traits<ValueType>::value);
+            CHECK_ROCSPARSE_ERROR(status, __FILE__, __LINE__);
+        }
+    }
+
+    template <typename ValueType>
+    void HIPAcceleratorMatrixCOO<ValueType>::DestroySpMatDescr_(void)
+    {
+        if(this->spmat_descr_ != NULL)
+        {
+            rocsparse_status status = rocsparse_destroy_spmat_descr(this->spmat_descr_);
+            CHECK_ROCSPARSE_ERROR(status, __FILE__, __LINE__);
+
+            this->spmat_descr_ = NULL;
+        }
+
+        this->ApplyAnalyseClear_();
     }
 
     template <typename ValueType>
@@ -121,6 +166,8 @@ namespace rocalution
         this->nrow_ = nrow;
         this->ncol_ = ncol;
         this->nnz_  = nnz;
+
+        this->CreateSpMatDescr_();
     }
 
     template <typename ValueType>
@@ -150,6 +197,8 @@ namespace rocalution
         this->mat_.row = *row;
         this->mat_.col = *col;
         this->mat_.val = *val;
+
+        this->CreateSpMatDescr_();
     }
 
     template <typename ValueType>
@@ -161,6 +210,8 @@ namespace rocalution
 
         DISCARD_HIP_ERROR(hipDeviceSynchronize());
         CHECK_HIP_ERROR(__FILE__, __LINE__);
+
+        this->DestroySpMatDescr_();
 
         // see free_host function for details
         *row = this->mat_.row;
@@ -179,6 +230,8 @@ namespace rocalution
     template <typename ValueType>
     void HIPAcceleratorMatrixCOO<ValueType>::Clear()
     {
+        this->DestroySpMatDescr_();
+
         free_hip(&this->mat_.row);
         free_hip(&this->mat_.col);
         free_hip(&this->mat_.val);
@@ -609,6 +662,132 @@ namespace rocalution
     }
 
     template <typename ValueType>
+    void HIPAcceleratorMatrixCOO<ValueType>::ApplyAnalyse_(ValueType alpha,
+                                                           rocsparse_const_dnvec_descr x,
+                                                           ValueType beta,
+                                                           rocsparse_dnvec_descr y) const
+    {
+        if(this->spmv_analyzed_)
+        {
+            return;
+        }
+
+        if(this->nnz_ > 0)
+        {
+            rocsparse_status status;
+
+            status = rocsparse_create_spmv_descr(&this->spmv_descr_);
+            CHECK_ROCSPARSE_ERROR(status, __FILE__, __LINE__);
+
+            const rocsparse_spmv_alg spmv_alg = rocsparse_spmv_alg_default;
+            status = rocsparse_spmv_set_input(ROCSPARSE_HANDLE(this->local_backend_.ROC_sparse_handle),
+                                              this->spmv_descr_,
+                                              rocsparse_spmv_input_alg,
+                                              &spmv_alg,
+                                              sizeof(spmv_alg),
+                                              nullptr);
+            CHECK_ROCSPARSE_ERROR(status, __FILE__, __LINE__);
+
+            const rocsparse_operation spmv_operation = rocsparse_operation_none;
+            status = rocsparse_spmv_set_input(ROCSPARSE_HANDLE(this->local_backend_.ROC_sparse_handle),
+                                              this->spmv_descr_,
+                                              rocsparse_spmv_input_operation,
+                                              &spmv_operation,
+                                              sizeof(spmv_operation),
+                                              nullptr);
+            CHECK_ROCSPARSE_ERROR(status, __FILE__, __LINE__);
+
+            const rocsparse_datatype spmv_datatype = rocsparse_datatype_traits<ValueType>::value;
+            status = rocsparse_spmv_set_input(ROCSPARSE_HANDLE(this->local_backend_.ROC_sparse_handle),
+                                              this->spmv_descr_,
+                                              rocsparse_spmv_input_scalar_datatype,
+                                              &spmv_datatype,
+                                              sizeof(spmv_datatype),
+                                              nullptr);
+            CHECK_ROCSPARSE_ERROR(status, __FILE__, __LINE__);
+
+            status = rocsparse_spmv_set_input(ROCSPARSE_HANDLE(this->local_backend_.ROC_sparse_handle),
+                                              this->spmv_descr_,
+                                              rocsparse_spmv_input_compute_datatype,
+                                              &spmv_datatype,
+                                              sizeof(spmv_datatype),
+                                              nullptr);
+            CHECK_ROCSPARSE_ERROR(status, __FILE__, __LINE__);
+
+            // Buffer size (analysis)
+            size_t buffer_size;
+            status = rocsparse_v2_spmv_buffer_size(ROCSPARSE_HANDLE(this->local_backend_.ROC_sparse_handle),
+                                                   this->spmv_descr_,
+                                                   this->spmat_descr_,
+                                                   x,
+                                                   y,
+                                                   rocsparse_v2_spmv_stage_analysis,
+                                                   &buffer_size,
+                                                   nullptr);
+            CHECK_ROCSPARSE_ERROR(status, __FILE__, __LINE__);
+
+            char* temp_buffer = NULL;
+            allocate_hip(buffer_size, &temp_buffer);
+
+            // Analysis
+            status = rocsparse_v2_spmv(ROCSPARSE_HANDLE(this->local_backend_.ROC_sparse_handle),
+                                       this->spmv_descr_,
+                                       &alpha,
+                                       this->spmat_descr_,
+                                       x,
+                                       &beta,
+                                       y,
+                                       rocsparse_v2_spmv_stage_analysis,
+                                       buffer_size,
+                                       temp_buffer,
+                                       nullptr);
+            CHECK_ROCSPARSE_ERROR(status, __FILE__, __LINE__);
+
+            free_hip(&temp_buffer);
+
+            // Buffer size (compute)
+            status = rocsparse_v2_spmv_buffer_size(ROCSPARSE_HANDLE(this->local_backend_.ROC_sparse_handle),
+                                                   this->spmv_descr_,
+                                                   this->spmat_descr_,
+                                                   x,
+                                                   y,
+                                                   rocsparse_v2_spmv_stage_compute,
+                                                   &this->spmv_buffer_size_,
+                                                   nullptr);
+            CHECK_ROCSPARSE_ERROR(status, __FILE__, __LINE__);
+
+            allocate_hip(this->spmv_buffer_size_, &this->spmv_buffer_);
+        }
+
+        this->spmv_analyzed_ = true;
+    }
+
+    template <typename ValueType>
+    void HIPAcceleratorMatrixCOO<ValueType>::ApplyAnalyseClear_(void)
+    {
+        if(this->spmv_descr_ != NULL)
+        {
+            // TODO verify there is no clear fct
+
+            rocsparse_status status = rocsparse_destroy_spmv_descr(this->spmv_descr_);
+            CHECK_ROCSPARSE_ERROR(status, __FILE__, __LINE__);
+
+            this->spmv_descr_ = 0;
+
+            // Clear buffer
+            if(this->spmv_buffer_ != NULL)
+            {
+                free_hip(&this->spmv_buffer_);
+                this->spmv_buffer_ = NULL;
+            }
+
+            this->spmv_buffer_size_ = 0;
+        }
+
+        this->spmv_analyzed_ = false;
+    }
+
+    template <typename ValueType>
     void HIPAcceleratorMatrixCOO<ValueType>::Apply(const BaseVector<ValueType>& in,
                                                    BaseVector<ValueType>*       out) const
     {
@@ -627,23 +806,24 @@ namespace rocalution
             assert(cast_in != NULL);
             assert(cast_out != NULL);
 
-            ValueType alpha = 1.0;
-            ValueType beta  = 0.0;
+            ValueType alpha = static_cast<ValueType>(1);
+            ValueType beta  = static_cast<ValueType>(0);
+
+            // Lazy matrix analyse
+            this->ApplyAnalyse_(alpha, cast_in->dnvec_descr_, beta, cast_out->dnvec_descr_);
 
             rocsparse_status status;
-            status = rocsparseTcoomv(ROCSPARSE_HANDLE(this->local_backend_.ROC_sparse_handle),
-                                     rocsparse_operation_none,
-                                     this->nrow_,
-                                     this->ncol_,
-                                     this->nnz_,
-                                     &alpha,
-                                     this->mat_descr_,
-                                     this->mat_.val,
-                                     this->mat_.row,
-                                     this->mat_.col,
-                                     cast_in->vec_,
-                                     &beta,
-                                     cast_out->vec_);
+            status = rocsparse_v2_spmv(ROCSPARSE_HANDLE(this->local_backend_.ROC_sparse_handle),
+                                       this->spmv_descr_,
+                                       &alpha,
+                                       this->spmat_descr_,
+                                       cast_in->dnvec_descr_,
+                                       &beta,
+                                       cast_out->dnvec_descr_,
+                                       rocsparse_v2_spmv_stage_compute,
+                                       this->spmv_buffer_size_,
+                                       this->spmv_buffer_,
+                                       nullptr);
             CHECK_ROCSPARSE_ERROR(status, __FILE__, __LINE__);
         }
     }
@@ -668,22 +848,23 @@ namespace rocalution
             assert(cast_in != NULL);
             assert(cast_out != NULL);
 
-            ValueType beta = 1.0;
+            ValueType beta = static_cast<ValueType>(1);
+
+            // Lazy matrix analyse
+            this->ApplyAnalyse_(scalar, cast_in->dnvec_descr_, beta, cast_out->dnvec_descr_);
 
             rocsparse_status status;
-            status = rocsparseTcoomv(ROCSPARSE_HANDLE(this->local_backend_.ROC_sparse_handle),
-                                     rocsparse_operation_none,
-                                     this->nrow_,
-                                     this->ncol_,
-                                     this->nnz_,
-                                     &scalar,
-                                     this->mat_descr_,
-                                     this->mat_.val,
-                                     this->mat_.row,
-                                     this->mat_.col,
-                                     cast_in->vec_,
-                                     &beta,
-                                     cast_out->vec_);
+            status = rocsparse_v2_spmv(ROCSPARSE_HANDLE(this->local_backend_.ROC_sparse_handle),
+                                       this->spmv_descr_,
+                                       &scalar,
+                                       this->spmat_descr_,
+                                       cast_in->dnvec_descr_,
+                                       &beta,
+                                       cast_out->dnvec_descr_,
+                                       rocsparse_v2_spmv_stage_compute,
+                                       this->spmv_buffer_size_,
+                                       this->spmv_buffer_,
+                                       nullptr);
             CHECK_ROCSPARSE_ERROR(status, __FILE__, __LINE__);
         }
     }
@@ -847,6 +1028,8 @@ namespace rocalution
             this->mat_.val = coo_val_sorted;
 
             free_hip(&buffer);
+
+            this->CreateSpMatDescr_();
         }
 
         return true;

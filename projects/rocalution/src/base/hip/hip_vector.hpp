@@ -30,6 +30,7 @@
 #include "../base_vector.hpp"
 
 #include <hip/hip_runtime.h>
+#include <rocsparse/rocsparse.h>
 
 #include <complex>
 
@@ -169,7 +170,14 @@ namespace rocalution
         virtual void Sort(BaseVector<ValueType>* sorted, BaseVector<int>* perm) const;
 
     private:
-        ValueType* vec_;
+        // Dense vector descriptor for the generic rocSPARSE API. It stays in sync with
+        // vec_ / size_ and remains NULL for value types rocSPARSE has no datatype for,
+        // as well as for empty vectors.
+        void CreateDnVecDescr_(void);
+        void DestroyDnVecDescr_(void);
+
+        ValueType*            vec_;
+        rocsparse_dnvec_descr dnvec_descr_;
 
         friend class HIPAcceleratorVector<float>;
         friend class HIPAcceleratorVector<double>;
