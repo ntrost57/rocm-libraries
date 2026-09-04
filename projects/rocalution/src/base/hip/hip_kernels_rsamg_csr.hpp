@@ -80,7 +80,7 @@ namespace rocalution
         unsigned int wid = threadIdx.x / WFSIZE;
 
         // The row this wavefront operates on
-        I row = blockIdx.x * BLOCKSIZE / WFSIZE + wid;
+        I row = global_block_id() * (BLOCKSIZE / WFSIZE) + wid;
 
         // Do not run out of bounds
         if(row >= nrow)
@@ -258,7 +258,7 @@ namespace rocalution
         unsigned int wid = threadIdx.x / WFSIZE;
 
         // The row this wavefront operates on
-        I row = blockIdx.x * BLOCKSIZE / WFSIZE + wid;
+        I row = global_block_id() * (BLOCKSIZE / WFSIZE) + wid;
 
         // Do not run out of bounds
         if(row >= nrow)
@@ -369,7 +369,7 @@ namespace rocalution
         unsigned int wid = threadIdx.x / WFSIZE;
 
         // The row this wavefront operates on
-        I row = blockIdx.x * BLOCKSIZE / WFSIZE + wid;
+        I row = global_block_id() * (BLOCKSIZE / WFSIZE) + wid;
 
         // Do not run out of bounds
         if(row >= nrow)
@@ -840,7 +840,7 @@ namespace rocalution
         unsigned int wid = threadIdx.x / WFSIZE;
 
         // The row this thread operates on
-        I row = blockIdx.x * BLOCKSIZE / WFSIZE + wid;
+        I row = global_block_id() * (BLOCKSIZE / WFSIZE) + wid;
 
         // Do not run out of bounds
         if(row >= nrow)

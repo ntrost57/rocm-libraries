@@ -5537,7 +5537,7 @@ namespace rocalution
             if(avg_nnz_per_row <= 8)
             {
                 kernel_csr_amg_find_max_mis_tuples_shared<256, 1>
-                    <<<dim3((this->nrow_ - 1) / (256 / 1) + 1),
+                    <<<launch_grid((this->nrow_ - 1) / (256 / 1) + 1, 256),
                        dim3(256),
                        0,
                        HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -5552,7 +5552,7 @@ namespace rocalution
             else if(avg_nnz_per_row <= 16)
             {
                 kernel_csr_amg_find_max_mis_tuples_shared<256, 2>
-                    <<<dim3((this->nrow_ - 1) / (256 / 2) + 1),
+                    <<<launch_grid((this->nrow_ - 1) / (256 / 2) + 1, 256),
                        dim3(256),
                        0,
                        HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -5567,7 +5567,7 @@ namespace rocalution
             else if(avg_nnz_per_row <= 32)
             {
                 kernel_csr_amg_find_max_mis_tuples_shared<256, 4>
-                    <<<dim3((this->nrow_ - 1) / (256 / 4) + 1),
+                    <<<launch_grid((this->nrow_ - 1) / (256 / 4) + 1, 256),
                        dim3(256),
                        0,
                        HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -5582,7 +5582,7 @@ namespace rocalution
             else if(avg_nnz_per_row <= 64)
             {
                 kernel_csr_amg_find_max_mis_tuples_shared<256, 8>
-                    <<<dim3((this->nrow_ - 1) / (256 / 8) + 1),
+                    <<<launch_grid((this->nrow_ - 1) / (256 / 8) + 1, 256),
                        dim3(256),
                        0,
                        HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -5597,7 +5597,7 @@ namespace rocalution
             else if(avg_nnz_per_row <= 128)
             {
                 kernel_csr_amg_find_max_mis_tuples_shared<256, 16>
-                    <<<dim3((this->nrow_ - 1) / (256 / 16) + 1),
+                    <<<launch_grid((this->nrow_ - 1) / (256 / 16) + 1, 256),
                        dim3(256),
                        0,
                        HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -5612,7 +5612,7 @@ namespace rocalution
             else if(avg_nnz_per_row <= 256 || this->local_backend_.HIP_warp == 32)
             {
                 kernel_csr_amg_find_max_mis_tuples_shared<256, 32>
-                    <<<dim3((this->nrow_ - 1) / (256 / 32) + 1),
+                    <<<launch_grid((this->nrow_ - 1) / (256 / 32) + 1, 256),
                        dim3(256),
                        0,
                        HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -5627,7 +5627,7 @@ namespace rocalution
             else
             {
                 kernel_csr_amg_find_max_mis_tuples_shared<256, 64>
-                    <<<dim3((this->nrow_ - 1) / (256 / 64) + 1),
+                    <<<launch_grid((this->nrow_ - 1) / (256 / 64) + 1, 256),
                        dim3(256),
                        0,
                        HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -5827,7 +5827,7 @@ namespace rocalution
         if(max_row_nnz < 8)
         {
             kernel_csr_sa_prolong_nnz<256, 4, 8>
-                <<<(this->nrow_ - 1) / (256 / 4) + 1,
+                <<<launch_grid((this->nrow_ - 1) / (256 / 4) + 1, 256),
                    256,
                    0,
                    HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -5841,7 +5841,7 @@ namespace rocalution
         else if(max_row_nnz < 16)
         {
             kernel_csr_sa_prolong_nnz<256, 4, 16>
-                <<<(this->nrow_ - 1) / (256 / 4) + 1,
+                <<<launch_grid((this->nrow_ - 1) / (256 / 4) + 1, 256),
                    256,
                    0,
                    HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -5855,7 +5855,7 @@ namespace rocalution
         else if(max_row_nnz < 32)
         {
             kernel_csr_sa_prolong_nnz<256, 8, 32>
-                <<<(this->nrow_ - 1) / (256 / 8) + 1,
+                <<<launch_grid((this->nrow_ - 1) / (256 / 8) + 1, 256),
                    256,
                    0,
                    HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -5869,7 +5869,7 @@ namespace rocalution
         else if(max_row_nnz < 64)
         {
             kernel_csr_sa_prolong_nnz<256, 16, 64>
-                <<<(this->nrow_ - 1) / (256 / 16) + 1,
+                <<<launch_grid((this->nrow_ - 1) / (256 / 16) + 1, 256),
                    256,
                    0,
                    HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -5883,7 +5883,7 @@ namespace rocalution
         else if(max_row_nnz < 128)
         {
             kernel_csr_sa_prolong_nnz<256, 16, 128>
-                <<<(this->nrow_ - 1) / (256 / 16) + 1,
+                <<<launch_grid((this->nrow_ - 1) / (256 / 16) + 1, 256),
                    256,
                    0,
                    HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -5897,7 +5897,7 @@ namespace rocalution
         else if(max_row_nnz < 256)
         {
             kernel_csr_sa_prolong_nnz<256, 64, 256>
-                <<<(this->nrow_ - 1) / (256 / 64) + 1,
+                <<<launch_grid((this->nrow_ - 1) / (256 / 64) + 1, 256),
                    256,
                    0,
                    HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -5911,7 +5911,7 @@ namespace rocalution
         else if(max_row_nnz < 512)
         {
             kernel_csr_sa_prolong_nnz<256, 64, 512>
-                <<<(this->nrow_ - 1) / (256 / 64) + 1,
+                <<<launch_grid((this->nrow_ - 1) / (256 / 64) + 1, 256),
                    256,
                    0,
                    HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -5925,7 +5925,7 @@ namespace rocalution
         else if(max_row_nnz < 1024)
         {
             kernel_csr_sa_prolong_nnz<256, 64, 1024>
-                <<<(this->nrow_ - 1) / (256 / 64) + 1,
+                <<<launch_grid((this->nrow_ - 1) / (256 / 64) + 1, 256),
                    256,
                    0,
                    HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -5939,7 +5939,7 @@ namespace rocalution
         else if(max_row_nnz < 2048)
         {
             kernel_csr_sa_prolong_nnz<256, 64, 2048>
-                <<<(this->nrow_ - 1) / (256 / 64) + 1,
+                <<<launch_grid((this->nrow_ - 1) / (256 / 64) + 1, 256),
                    256,
                    0,
                    HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -5953,7 +5953,7 @@ namespace rocalution
         else if(max_row_nnz < 4096)
         {
             kernel_csr_sa_prolong_nnz<256, 64, 4096>
-                <<<(this->nrow_ - 1) / (256 / 64) + 1,
+                <<<launch_grid((this->nrow_ - 1) / (256 / 64) + 1, 256),
                    256,
                    0,
                    HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -5967,7 +5967,7 @@ namespace rocalution
         else if(max_row_nnz < 8192)
         {
             kernel_csr_sa_prolong_nnz<128, 64, 8192>
-                <<<(this->nrow_ - 1) / (128 / 64) + 1,
+                <<<launch_grid((this->nrow_ - 1) / (128 / 64) + 1, 128),
                    128,
                    0,
                    HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -5981,7 +5981,7 @@ namespace rocalution
         else if(max_row_nnz < 16384)
         {
             kernel_csr_sa_prolong_nnz<64, 64, 16384>
-                <<<(this->nrow_ - 1) / (64 / 64) + 1,
+                <<<launch_grid((this->nrow_ - 1) / (64 / 64) + 1, 64),
                    64,
                    0,
                    HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -6078,7 +6078,7 @@ namespace rocalution
         if(max_row_nnz < 8)
         {
             kernel_csr_sa_prolong_fill<128, 4, 8>
-                <<<(this->nrow_ - 1) / (128 / 4) + 1,
+                <<<launch_grid((this->nrow_ - 1) / (128 / 4) + 1, 128),
                    128,
                    0,
                    HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -6097,7 +6097,7 @@ namespace rocalution
         else if(max_row_nnz < 16)
         {
             kernel_csr_sa_prolong_fill<128, 8, 16>
-                <<<(this->nrow_ - 1) / (128 / 8) + 1,
+                <<<launch_grid((this->nrow_ - 1) / (128 / 8) + 1, 128),
                    128,
                    0,
                    HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -6116,7 +6116,7 @@ namespace rocalution
         else if(max_row_nnz < 32)
         {
             kernel_csr_sa_prolong_fill<128, 16, 32>
-                <<<(this->nrow_ - 1) / (128 / 16) + 1,
+                <<<launch_grid((this->nrow_ - 1) / (128 / 16) + 1, 128),
                    128,
                    0,
                    HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -6135,7 +6135,7 @@ namespace rocalution
         else if(max_row_nnz < 64)
         {
             kernel_csr_sa_prolong_fill<128, 32, 64>
-                <<<(this->nrow_ - 1) / (128 / 32) + 1,
+                <<<launch_grid((this->nrow_ - 1) / (128 / 32) + 1, 128),
                    128,
                    0,
                    HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -6154,7 +6154,7 @@ namespace rocalution
         else if(max_row_nnz < 128)
         {
             kernel_csr_sa_prolong_fill<128, 64, 128>
-                <<<(this->nrow_ - 1) / (128 / 64) + 1,
+                <<<launch_grid((this->nrow_ - 1) / (128 / 64) + 1, 128),
                    128,
                    0,
                    HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -6173,7 +6173,7 @@ namespace rocalution
         else if(max_row_nnz < 256)
         {
             kernel_csr_sa_prolong_fill<128, 64, 256>
-                <<<(this->nrow_ - 1) / (128 / 64) + 1,
+                <<<launch_grid((this->nrow_ - 1) / (128 / 64) + 1, 128),
                    128,
                    0,
                    HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -6192,7 +6192,7 @@ namespace rocalution
         else if(max_row_nnz < 512)
         {
             kernel_csr_sa_prolong_fill<128, 64, 512>
-                <<<(this->nrow_ - 1) / (128 / 64) + 1,
+                <<<launch_grid((this->nrow_ - 1) / (128 / 64) + 1, 128),
                    128,
                    0,
                    HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -6211,7 +6211,7 @@ namespace rocalution
         else if(max_row_nnz < 1024)
         {
             kernel_csr_sa_prolong_fill<128, 64, 1024>
-                <<<(this->nrow_ - 1) / (128 / 64) + 1,
+                <<<launch_grid((this->nrow_ - 1) / (128 / 64) + 1, 128),
                    128,
                    0,
                    HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -6230,7 +6230,7 @@ namespace rocalution
         else if(max_row_nnz < 2048)
         {
             kernel_csr_sa_prolong_fill<64, 64, 2048>
-                <<<(this->nrow_ - 1) / (64 / 64) + 1,
+                <<<launch_grid((this->nrow_ - 1) / (64 / 64) + 1, 64),
                    64,
                    0,
                    HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -7597,7 +7597,7 @@ namespace rocalution
         if(max_row_nnz < 8)
         {
             kernel_csr_sa_prolong_nnz<256, 4, 8>
-                <<<(this->nrow_ - 1) / (256 / 4) + 1,
+                <<<launch_grid((this->nrow_ - 1) / (256 / 4) + 1, 256),
                    256,
                    0,
                    HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(this->nrow_,
@@ -7610,7 +7610,7 @@ namespace rocalution
         else if(max_row_nnz < 16)
         {
             kernel_csr_sa_prolong_nnz<256, 4, 16>
-                <<<(this->nrow_ - 1) / (256 / 4) + 1,
+                <<<launch_grid((this->nrow_ - 1) / (256 / 4) + 1, 256),
                    256,
                    0,
                    HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(this->nrow_,
@@ -7623,7 +7623,7 @@ namespace rocalution
         else if(max_row_nnz < 32)
         {
             kernel_csr_sa_prolong_nnz<256, 8, 32>
-                <<<(this->nrow_ - 1) / (256 / 8) + 1,
+                <<<launch_grid((this->nrow_ - 1) / (256 / 8) + 1, 256),
                    256,
                    0,
                    HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(this->nrow_,
@@ -7636,7 +7636,7 @@ namespace rocalution
         else if(max_row_nnz < 64)
         {
             kernel_csr_sa_prolong_nnz<256, 16, 64>
-                <<<(this->nrow_ - 1) / (256 / 16) + 1,
+                <<<launch_grid((this->nrow_ - 1) / (256 / 16) + 1, 256),
                    256,
                    0,
                    HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(this->nrow_,
@@ -7649,7 +7649,7 @@ namespace rocalution
         else if(max_row_nnz < 128)
         {
             kernel_csr_sa_prolong_nnz<256, 16, 128>
-                <<<(this->nrow_ - 1) / (256 / 16) + 1,
+                <<<launch_grid((this->nrow_ - 1) / (256 / 16) + 1, 256),
                    256,
                    0,
                    HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(this->nrow_,
@@ -7662,7 +7662,7 @@ namespace rocalution
         else if(max_row_nnz < 256)
         {
             kernel_csr_sa_prolong_nnz<256, 64, 256>
-                <<<(this->nrow_ - 1) / (256 / 64) + 1,
+                <<<launch_grid((this->nrow_ - 1) / (256 / 64) + 1, 256),
                    256,
                    0,
                    HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(this->nrow_,
@@ -7675,7 +7675,7 @@ namespace rocalution
         else if(max_row_nnz < 512)
         {
             kernel_csr_sa_prolong_nnz<256, 64, 512>
-                <<<(this->nrow_ - 1) / (256 / 64) + 1,
+                <<<launch_grid((this->nrow_ - 1) / (256 / 64) + 1, 256),
                    256,
                    0,
                    HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(this->nrow_,
@@ -7688,7 +7688,7 @@ namespace rocalution
         else if(max_row_nnz < 1024)
         {
             kernel_csr_sa_prolong_nnz<256, 64, 1024>
-                <<<(this->nrow_ - 1) / (256 / 64) + 1,
+                <<<launch_grid((this->nrow_ - 1) / (256 / 64) + 1, 256),
                    256,
                    0,
                    HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(this->nrow_,
@@ -7747,7 +7747,7 @@ namespace rocalution
         if(max_row_nnz < 8)
         {
             kernel_csr_sa_prolong_fill<128, 4, 8>
-                <<<(this->nrow_ - 1) / (128 / 4) + 1,
+                <<<launch_grid((this->nrow_ - 1) / (128 / 4) + 1, 128),
                    128,
                    0,
                    HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -7766,7 +7766,7 @@ namespace rocalution
         else if(max_row_nnz < 16)
         {
             kernel_csr_sa_prolong_fill<128, 8, 16>
-                <<<(this->nrow_ - 1) / (128 / 8) + 1,
+                <<<launch_grid((this->nrow_ - 1) / (128 / 8) + 1, 128),
                    128,
                    0,
                    HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -7785,7 +7785,7 @@ namespace rocalution
         else if(max_row_nnz < 32)
         {
             kernel_csr_sa_prolong_fill<128, 16, 32>
-                <<<(this->nrow_ - 1) / (128 / 16) + 1,
+                <<<launch_grid((this->nrow_ - 1) / (128 / 16) + 1, 128),
                    128,
                    0,
                    HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -7804,7 +7804,7 @@ namespace rocalution
         else if(max_row_nnz < 64)
         {
             kernel_csr_sa_prolong_fill<128, 32, 64>
-                <<<(this->nrow_ - 1) / (128 / 32) + 1,
+                <<<launch_grid((this->nrow_ - 1) / (128 / 32) + 1, 128),
                    128,
                    0,
                    HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -7823,7 +7823,7 @@ namespace rocalution
         else if(max_row_nnz < 128)
         {
             kernel_csr_sa_prolong_fill<128, 64, 128>
-                <<<(this->nrow_ - 1) / (128 / 64) + 1,
+                <<<launch_grid((this->nrow_ - 1) / (128 / 64) + 1, 128),
                    128,
                    0,
                    HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -7842,7 +7842,7 @@ namespace rocalution
         else if(max_row_nnz < 256)
         {
             kernel_csr_sa_prolong_fill<128, 64, 256>
-                <<<(this->nrow_ - 1) / (128 / 64) + 1,
+                <<<launch_grid((this->nrow_ - 1) / (128 / 64) + 1, 128),
                    128,
                    0,
                    HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -7861,7 +7861,7 @@ namespace rocalution
         else if(max_row_nnz < 512)
         {
             kernel_csr_sa_prolong_fill<128, 64, 512>
-                <<<(this->nrow_ - 1) / (128 / 64) + 1,
+                <<<launch_grid((this->nrow_ - 1) / (128 / 64) + 1, 128),
                    128,
                    0,
                    HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -8150,7 +8150,7 @@ namespace rocalution
             if(max_row_nnz < 8)
             {
                 kernel_csr_sa_prolong_nnz<false, 256, 4, 8>
-                    <<<(this->nrow_ - 1) / (256 / 4) + 1,
+                    <<<launch_grid((this->nrow_ - 1) / (256 / 4) + 1, 256),
                        256,
                        0,
                        HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -8172,7 +8172,7 @@ namespace rocalution
             else if(max_row_nnz < 16)
             {
                 kernel_csr_sa_prolong_nnz<false, 256, 4, 16>
-                    <<<(this->nrow_ - 1) / (256 / 4) + 1,
+                    <<<launch_grid((this->nrow_ - 1) / (256 / 4) + 1, 256),
                        256,
                        0,
                        HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -8194,7 +8194,7 @@ namespace rocalution
             else if(max_row_nnz < 32)
             {
                 kernel_csr_sa_prolong_nnz<false, 256, 8, 32>
-                    <<<(this->nrow_ - 1) / (256 / 8) + 1,
+                    <<<launch_grid((this->nrow_ - 1) / (256 / 8) + 1, 256),
                        256,
                        0,
                        HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -8216,7 +8216,7 @@ namespace rocalution
             else if(max_row_nnz < 64)
             {
                 kernel_csr_sa_prolong_nnz<false, 256, 16, 64>
-                    <<<(this->nrow_ - 1) / (256 / 16) + 1,
+                    <<<launch_grid((this->nrow_ - 1) / (256 / 16) + 1, 256),
                        256,
                        0,
                        HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -8238,7 +8238,7 @@ namespace rocalution
             else if(max_row_nnz < 128)
             {
                 kernel_csr_sa_prolong_nnz<false, 256, 16, 128>
-                    <<<(this->nrow_ - 1) / (256 / 16) + 1,
+                    <<<launch_grid((this->nrow_ - 1) / (256 / 16) + 1, 256),
                        256,
                        0,
                        HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -8264,7 +8264,7 @@ namespace rocalution
                 if(this->local_backend_.HIP_warp == 32)
                 {
                     kernel_csr_sa_prolong_nnz<false, 128, 32, 256>
-                        <<<(this->nrow_ - 1) / (128 / 32) + 1,
+                        <<<launch_grid((this->nrow_ - 1) / (128 / 32) + 1, 128),
                            128,
                            0,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -8286,7 +8286,7 @@ namespace rocalution
                 else
                 {
                     kernel_csr_sa_prolong_nnz<false, 256, 64, 256>
-                        <<<(this->nrow_ - 1) / (256 / 64) + 1,
+                        <<<launch_grid((this->nrow_ - 1) / (256 / 64) + 1, 256),
                            256,
                            0,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -8311,7 +8311,7 @@ namespace rocalution
                 if(this->local_backend_.HIP_warp == 32)
                 {
                     kernel_csr_sa_prolong_nnz<false, 128, 32, 512>
-                        <<<(this->nrow_ - 1) / (128 / 32) + 1,
+                        <<<launch_grid((this->nrow_ - 1) / (128 / 32) + 1, 128),
                            128,
                            0,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -8333,7 +8333,7 @@ namespace rocalution
                 else
                 {
                     kernel_csr_sa_prolong_nnz<false, 256, 64, 512>
-                        <<<(this->nrow_ - 1) / (256 / 64) + 1,
+                        <<<launch_grid((this->nrow_ - 1) / (256 / 64) + 1, 256),
                            256,
                            0,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -8358,7 +8358,7 @@ namespace rocalution
                 if(this->local_backend_.HIP_warp == 32)
                 {
                     kernel_csr_sa_prolong_nnz<false, 128, 32, 1024>
-                        <<<(this->nrow_ - 1) / (128 / 32) + 1,
+                        <<<launch_grid((this->nrow_ - 1) / (128 / 32) + 1, 128),
                            128,
                            0,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -8380,7 +8380,7 @@ namespace rocalution
                 else
                 {
                     kernel_csr_sa_prolong_nnz<false, 256, 64, 1024>
-                        <<<(this->nrow_ - 1) / (256 / 64) + 1,
+                        <<<launch_grid((this->nrow_ - 1) / (256 / 64) + 1, 256),
                            256,
                            0,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -8415,7 +8415,7 @@ namespace rocalution
             if(max_row_nnz < 8)
             {
                 kernel_csr_sa_prolong_nnz<true, 256, 4, 8>
-                    <<<(this->nrow_ - 1) / (256 / 4) + 1,
+                    <<<launch_grid((this->nrow_ - 1) / (256 / 4) + 1, 256),
                        256,
                        0,
                        HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -8437,7 +8437,7 @@ namespace rocalution
             else if(max_row_nnz < 16)
             {
                 kernel_csr_sa_prolong_nnz<true, 256, 4, 16>
-                    <<<(this->nrow_ - 1) / (256 / 4) + 1,
+                    <<<launch_grid((this->nrow_ - 1) / (256 / 4) + 1, 256),
                        256,
                        0,
                        HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -8459,7 +8459,7 @@ namespace rocalution
             else if(max_row_nnz < 32)
             {
                 kernel_csr_sa_prolong_nnz<true, 256, 8, 32>
-                    <<<(this->nrow_ - 1) / (256 / 8) + 1,
+                    <<<launch_grid((this->nrow_ - 1) / (256 / 8) + 1, 256),
                        256,
                        0,
                        HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -8481,7 +8481,7 @@ namespace rocalution
             else if(max_row_nnz < 64)
             {
                 kernel_csr_sa_prolong_nnz<true, 256, 16, 64>
-                    <<<(this->nrow_ - 1) / (256 / 16) + 1,
+                    <<<launch_grid((this->nrow_ - 1) / (256 / 16) + 1, 256),
                        256,
                        0,
                        HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -8503,7 +8503,7 @@ namespace rocalution
             else if(max_row_nnz < 128)
             {
                 kernel_csr_sa_prolong_nnz<true, 256, 16, 128>
-                    <<<(this->nrow_ - 1) / (256 / 16) + 1,
+                    <<<launch_grid((this->nrow_ - 1) / (256 / 16) + 1, 256),
                        256,
                        0,
                        HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -8529,7 +8529,7 @@ namespace rocalution
                 if(this->local_backend_.HIP_warp == 32)
                 {
                     kernel_csr_sa_prolong_nnz<true, 128, 32, 256>
-                        <<<(this->nrow_ - 1) / (128 / 32) + 1,
+                        <<<launch_grid((this->nrow_ - 1) / (128 / 32) + 1, 128),
                            128,
                            0,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -8551,7 +8551,7 @@ namespace rocalution
                 else
                 {
                     kernel_csr_sa_prolong_nnz<true, 256, 64, 256>
-                        <<<(this->nrow_ - 1) / (256 / 64) + 1,
+                        <<<launch_grid((this->nrow_ - 1) / (256 / 64) + 1, 256),
                            256,
                            0,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -8576,7 +8576,7 @@ namespace rocalution
                 if(this->local_backend_.HIP_warp == 32)
                 {
                     kernel_csr_sa_prolong_nnz<true, 128, 32, 512>
-                        <<<(this->nrow_ - 1) / (128 / 32) + 1,
+                        <<<launch_grid((this->nrow_ - 1) / (128 / 32) + 1, 128),
                            128,
                            0,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -8598,7 +8598,7 @@ namespace rocalution
                 else
                 {
                     kernel_csr_sa_prolong_nnz<true, 256, 64, 512>
-                        <<<(this->nrow_ - 1) / (256 / 64) + 1,
+                        <<<launch_grid((this->nrow_ - 1) / (256 / 64) + 1, 256),
                            256,
                            0,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -8623,7 +8623,7 @@ namespace rocalution
                 if(this->local_backend_.HIP_warp == 32)
                 {
                     kernel_csr_sa_prolong_nnz<true, 128, 32, 1024>
-                        <<<(this->nrow_ - 1) / (128 / 32) + 1,
+                        <<<launch_grid((this->nrow_ - 1) / (128 / 32) + 1, 128),
                            128,
                            0,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -8645,7 +8645,7 @@ namespace rocalution
                 else
                 {
                     kernel_csr_sa_prolong_nnz<true, 256, 64, 1024>
-                        <<<(this->nrow_ - 1) / (256 / 64) + 1,
+                        <<<launch_grid((this->nrow_ - 1) / (256 / 64) + 1, 256),
                            256,
                            0,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -8877,7 +8877,7 @@ namespace rocalution
             if(max_row_nnz < 8)
             {
                 kernel_csr_sa_prolong_fill<false, 128, 4, 8>
-                    <<<(this->nrow_ - 1) / (128 / 4) + 1,
+                    <<<launch_grid((this->nrow_ - 1) / (128 / 4) + 1, 128),
                        128,
                        0,
                        HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -8908,7 +8908,7 @@ namespace rocalution
             else if(max_row_nnz < 16)
             {
                 kernel_csr_sa_prolong_fill<false, 128, 8, 16>
-                    <<<(this->nrow_ - 1) / (128 / 8) + 1,
+                    <<<launch_grid((this->nrow_ - 1) / (128 / 8) + 1, 128),
                        128,
                        0,
                        HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -8939,7 +8939,7 @@ namespace rocalution
             else if(max_row_nnz < 32)
             {
                 kernel_csr_sa_prolong_fill<false, 128, 16, 32>
-                    <<<(this->nrow_ - 1) / (128 / 16) + 1,
+                    <<<launch_grid((this->nrow_ - 1) / (128 / 16) + 1, 128),
                        128,
                        0,
                        HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -8970,7 +8970,7 @@ namespace rocalution
             else if(max_row_nnz < 64)
             {
                 kernel_csr_sa_prolong_fill<false, 128, 32, 64>
-                    <<<(this->nrow_ - 1) / (128 / 32) + 1,
+                    <<<launch_grid((this->nrow_ - 1) / (128 / 32) + 1, 128),
                        128,
                        0,
                        HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -9005,7 +9005,7 @@ namespace rocalution
                 if(this->local_backend_.HIP_warp == 32)
                 {
                     kernel_csr_sa_prolong_fill<false, 64, 32, 128>
-                        <<<(this->nrow_ - 1) / (64 / 32) + 1,
+                        <<<launch_grid((this->nrow_ - 1) / (64 / 32) + 1, 64),
                            64,
                            0,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -9036,7 +9036,7 @@ namespace rocalution
                 else
                 {
                     kernel_csr_sa_prolong_fill<false, 128, 64, 128>
-                        <<<(this->nrow_ - 1) / (128 / 64) + 1,
+                        <<<launch_grid((this->nrow_ - 1) / (128 / 64) + 1, 128),
                            128,
                            0,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -9070,7 +9070,7 @@ namespace rocalution
                 if(this->local_backend_.HIP_warp == 32)
                 {
                     kernel_csr_sa_prolong_fill<false, 64, 32, 256>
-                        <<<(this->nrow_ - 1) / (64 / 32) + 1,
+                        <<<launch_grid((this->nrow_ - 1) / (64 / 32) + 1, 64),
                            64,
                            0,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -9101,7 +9101,7 @@ namespace rocalution
                 else
                 {
                     kernel_csr_sa_prolong_fill<false, 128, 64, 256>
-                        <<<(this->nrow_ - 1) / (128 / 64) + 1,
+                        <<<launch_grid((this->nrow_ - 1) / (128 / 64) + 1, 128),
                            128,
                            0,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -9135,7 +9135,7 @@ namespace rocalution
                 if(this->local_backend_.HIP_warp == 32)
                 {
                     kernel_csr_sa_prolong_fill<false, 64, 32, 512>
-                        <<<(this->nrow_ - 1) / (64 / 32) + 1,
+                        <<<launch_grid((this->nrow_ - 1) / (64 / 32) + 1, 64),
                            64,
                            0,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -9166,7 +9166,7 @@ namespace rocalution
                 else
                 {
                     kernel_csr_sa_prolong_fill<false, 128, 64, 512>
-                        <<<(this->nrow_ - 1) / (128 / 64) + 1,
+                        <<<launch_grid((this->nrow_ - 1) / (128 / 64) + 1, 128),
                            128,
                            0,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -9211,7 +9211,7 @@ namespace rocalution
             if(max_row_nnz < 8)
             {
                 kernel_csr_sa_prolong_fill<true, 128, 4, 8>
-                    <<<(this->nrow_ - 1) / (128 / 4) + 1,
+                    <<<launch_grid((this->nrow_ - 1) / (128 / 4) + 1, 128),
                        128,
                        0,
                        HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -9242,7 +9242,7 @@ namespace rocalution
             else if(max_row_nnz < 16)
             {
                 kernel_csr_sa_prolong_fill<true, 128, 8, 16>
-                    <<<(this->nrow_ - 1) / (128 / 8) + 1,
+                    <<<launch_grid((this->nrow_ - 1) / (128 / 8) + 1, 128),
                        128,
                        0,
                        HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -9273,7 +9273,7 @@ namespace rocalution
             else if(max_row_nnz < 32)
             {
                 kernel_csr_sa_prolong_fill<true, 128, 16, 32>
-                    <<<(this->nrow_ - 1) / (128 / 16) + 1,
+                    <<<launch_grid((this->nrow_ - 1) / (128 / 16) + 1, 128),
                        128,
                        0,
                        HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -9304,7 +9304,7 @@ namespace rocalution
             else if(max_row_nnz < 64)
             {
                 kernel_csr_sa_prolong_fill<true, 128, 32, 64>
-                    <<<(this->nrow_ - 1) / (128 / 32) + 1,
+                    <<<launch_grid((this->nrow_ - 1) / (128 / 32) + 1, 128),
                        128,
                        0,
                        HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -9339,7 +9339,7 @@ namespace rocalution
                 if(this->local_backend_.HIP_warp == 32)
                 {
                     kernel_csr_sa_prolong_fill<true, 64, 32, 128>
-                        <<<(this->nrow_ - 1) / (64 / 32) + 1,
+                        <<<launch_grid((this->nrow_ - 1) / (64 / 32) + 1, 64),
                            64,
                            0,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -9370,7 +9370,7 @@ namespace rocalution
                 else
                 {
                     kernel_csr_sa_prolong_fill<true, 128, 64, 128>
-                        <<<(this->nrow_ - 1) / (128 / 64) + 1,
+                        <<<launch_grid((this->nrow_ - 1) / (128 / 64) + 1, 128),
                            128,
                            0,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -9404,7 +9404,7 @@ namespace rocalution
                 if(this->local_backend_.HIP_warp == 32)
                 {
                     kernel_csr_sa_prolong_fill<true, 64, 32, 256>
-                        <<<(this->nrow_ - 1) / (64 / 32) + 1,
+                        <<<launch_grid((this->nrow_ - 1) / (64 / 32) + 1, 64),
                            64,
                            0,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -9435,7 +9435,7 @@ namespace rocalution
                 else
                 {
                     kernel_csr_sa_prolong_fill<true, 128, 64, 256>
-                        <<<(this->nrow_ - 1) / (128 / 64) + 1,
+                        <<<launch_grid((this->nrow_ - 1) / (128 / 64) + 1, 128),
                            128,
                            0,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -9469,7 +9469,7 @@ namespace rocalution
                 if(this->local_backend_.HIP_warp == 32)
                 {
                     kernel_csr_sa_prolong_fill<true, 64, 32, 512>
-                        <<<(this->nrow_ - 1) / (64 / 32) + 1,
+                        <<<launch_grid((this->nrow_ - 1) / (64 / 32) + 1, 64),
                            64,
                            0,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -9500,7 +9500,7 @@ namespace rocalution
                 else
                 {
                     kernel_csr_sa_prolong_fill<true, 128, 64, 512>
-                        <<<(this->nrow_ - 1) / (128 / 64) + 1,
+                        <<<launch_grid((this->nrow_ - 1) / (128 / 64) + 1, 128),
                            128,
                            0,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -10615,7 +10615,7 @@ namespace rocalution
                 if(max_row_nnz < 16)
                 {
                     kernel_csr_compress_add_nnz<false, 256, 8, 16>
-                        <<<(nrow - 1) / (256 / 8) + 1,
+                        <<<launch_grid((nrow - 1) / (256 / 8) + 1, 256),
                            256,
                            0,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -10630,7 +10630,7 @@ namespace rocalution
                 else if(max_row_nnz < 32)
                 {
                     kernel_csr_compress_add_nnz<false, 256, 16, 32>
-                        <<<(nrow - 1) / (256 / 16) + 1,
+                        <<<launch_grid((nrow - 1) / (256 / 16) + 1, 256),
                            256,
                            0,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -10645,7 +10645,7 @@ namespace rocalution
                 else if(max_row_nnz < 64)
                 {
                     kernel_csr_compress_add_nnz<false, 256, 32, 64>
-                        <<<(nrow - 1) / (256 / 32) + 1,
+                        <<<launch_grid((nrow - 1) / (256 / 32) + 1, 256),
                            256,
                            0,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -10660,7 +10660,7 @@ namespace rocalution
                 else if(max_row_nnz < 128)
                 {
                     kernel_csr_compress_add_nnz<false, 256, 64, 128>
-                        <<<(nrow - 1) / (256 / 64) + 1,
+                        <<<launch_grid((nrow - 1) / (256 / 64) + 1, 256),
                            256,
                            0,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -10675,7 +10675,7 @@ namespace rocalution
                 else if(max_row_nnz < 256)
                 {
                     kernel_csr_compress_add_nnz<false, 256, 64, 256>
-                        <<<(nrow - 1) / (256 / 64) + 1,
+                        <<<launch_grid((nrow - 1) / (256 / 64) + 1, 256),
                            256,
                            0,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -10690,7 +10690,7 @@ namespace rocalution
                 else if(max_row_nnz < 512)
                 {
                     kernel_csr_compress_add_nnz<false, 256, 64, 512>
-                        <<<(nrow - 1) / (256 / 64) + 1,
+                        <<<launch_grid((nrow - 1) / (256 / 64) + 1, 256),
                            256,
                            0,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -10705,7 +10705,7 @@ namespace rocalution
                 else if(max_row_nnz < 1024)
                 {
                     kernel_csr_compress_add_nnz<false, 256, 64, 1024>
-                        <<<(nrow - 1) / (256 / 64) + 1,
+                        <<<launch_grid((nrow - 1) / (256 / 64) + 1, 256),
                            256,
                            0,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -10720,7 +10720,7 @@ namespace rocalution
                 else if(max_row_nnz < 2048)
                 {
                     kernel_csr_compress_add_nnz<false, 256, 64, 2048>
-                        <<<(nrow - 1) / (256 / 64) + 1,
+                        <<<launch_grid((nrow - 1) / (256 / 64) + 1, 256),
                            256,
                            0,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -10735,7 +10735,7 @@ namespace rocalution
                 else if(max_row_nnz < 4096)
                 {
                     kernel_csr_compress_add_nnz<false, 256, 64, 4096>
-                        <<<(nrow - 1) / (256 / 64) + 1,
+                        <<<launch_grid((nrow - 1) / (256 / 64) + 1, 256),
                            256,
                            0,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -10750,7 +10750,7 @@ namespace rocalution
                 else if(max_row_nnz < 8192)
                 {
                     kernel_csr_compress_add_nnz<false, 128, 64, 8192>
-                        <<<(nrow - 1) / (128 / 64) + 1,
+                        <<<launch_grid((nrow - 1) / (128 / 64) + 1, 128),
                            128,
                            0,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -10765,7 +10765,7 @@ namespace rocalution
                 else if(max_row_nnz < 16384)
                 {
                     kernel_csr_compress_add_nnz<false, 64, 64, 16384>
-                        <<<(nrow - 1) / (64 / 64) + 1,
+                        <<<launch_grid((nrow - 1) / (64 / 64) + 1, 64),
                            64,
                            0,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -10793,7 +10793,7 @@ namespace rocalution
                 if(max_row_nnz < 16)
                 {
                     kernel_csr_compress_add_nnz<true, 256, 8, 16>
-                        <<<(nrow - 1) / (256 / 8) + 1,
+                        <<<launch_grid((nrow - 1) / (256 / 8) + 1, 256),
                            256,
                            0,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -10808,7 +10808,7 @@ namespace rocalution
                 else if(max_row_nnz < 32)
                 {
                     kernel_csr_compress_add_nnz<true, 256, 16, 32>
-                        <<<(nrow - 1) / (256 / 16) + 1,
+                        <<<launch_grid((nrow - 1) / (256 / 16) + 1, 256),
                            256,
                            0,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -10823,7 +10823,7 @@ namespace rocalution
                 else if(max_row_nnz < 64)
                 {
                     kernel_csr_compress_add_nnz<true, 256, 32, 64>
-                        <<<(nrow - 1) / (256 / 32) + 1,
+                        <<<launch_grid((nrow - 1) / (256 / 32) + 1, 256),
                            256,
                            0,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -10838,7 +10838,7 @@ namespace rocalution
                 else if(max_row_nnz < 128)
                 {
                     kernel_csr_compress_add_nnz<true, 256, 64, 128>
-                        <<<(nrow - 1) / (256 / 64) + 1,
+                        <<<launch_grid((nrow - 1) / (256 / 64) + 1, 256),
                            256,
                            0,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -10853,7 +10853,7 @@ namespace rocalution
                 else if(max_row_nnz < 256)
                 {
                     kernel_csr_compress_add_nnz<true, 256, 64, 256>
-                        <<<(nrow - 1) / (256 / 64) + 1,
+                        <<<launch_grid((nrow - 1) / (256 / 64) + 1, 256),
                            256,
                            0,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -10868,7 +10868,7 @@ namespace rocalution
                 else if(max_row_nnz < 512)
                 {
                     kernel_csr_compress_add_nnz<true, 256, 64, 512>
-                        <<<(nrow - 1) / (256 / 64) + 1,
+                        <<<launch_grid((nrow - 1) / (256 / 64) + 1, 256),
                            256,
                            0,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -10883,7 +10883,7 @@ namespace rocalution
                 else if(max_row_nnz < 1024)
                 {
                     kernel_csr_compress_add_nnz<true, 256, 64, 1024>
-                        <<<(nrow - 1) / (256 / 64) + 1,
+                        <<<launch_grid((nrow - 1) / (256 / 64) + 1, 256),
                            256,
                            0,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -10898,7 +10898,7 @@ namespace rocalution
                 else if(max_row_nnz < 2048)
                 {
                     kernel_csr_compress_add_nnz<true, 256, 64, 2048>
-                        <<<(nrow - 1) / (256 / 64) + 1,
+                        <<<launch_grid((nrow - 1) / (256 / 64) + 1, 256),
                            256,
                            0,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -10913,7 +10913,7 @@ namespace rocalution
                 else if(max_row_nnz < 4096)
                 {
                     kernel_csr_compress_add_nnz<true, 128, 64, 4096>
-                        <<<(nrow - 1) / (128 / 64) + 1,
+                        <<<launch_grid((nrow - 1) / (128 / 64) + 1, 128),
                            128,
                            0,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -10928,7 +10928,7 @@ namespace rocalution
                 else if(max_row_nnz < 8192)
                 {
                     kernel_csr_compress_add_nnz<true, 64, 64, 8192>
-                        <<<(nrow - 1) / (64 / 64) + 1,
+                        <<<launch_grid((nrow - 1) / (64 / 64) + 1, 64),
                            64,
                            0,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -11031,7 +11031,7 @@ namespace rocalution
                 {
                     size_t ssize = 256 / 8 * 16 * (sizeof(int64_t) + sizeof(ValueType));
                     kernel_csr_compress_add_fill<true, 256, 8, 16>
-                        <<<(nrow - 1) / (256 / 8) + 1,
+                        <<<launch_grid((nrow - 1) / (256 / 8) + 1, 256),
                            256,
                            ssize,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -11051,7 +11051,7 @@ namespace rocalution
                 {
                     size_t ssize = 256 / 16 * 32 * (sizeof(int64_t) + sizeof(ValueType));
                     kernel_csr_compress_add_fill<true, 256, 16, 32>
-                        <<<(nrow - 1) / (256 / 16) + 1,
+                        <<<launch_grid((nrow - 1) / (256 / 16) + 1, 256),
                            256,
                            ssize,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -11071,7 +11071,7 @@ namespace rocalution
                 {
                     size_t ssize = 256 / 32 * 64 * (sizeof(int64_t) + sizeof(ValueType));
                     kernel_csr_compress_add_fill<true, 256, 32, 64>
-                        <<<(nrow - 1) / (256 / 32) + 1,
+                        <<<launch_grid((nrow - 1) / (256 / 32) + 1, 256),
                            256,
                            ssize,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -11091,7 +11091,7 @@ namespace rocalution
                 {
                     size_t ssize = 256 / 64 * 128 * (sizeof(int64_t) + sizeof(ValueType));
                     kernel_csr_compress_add_fill<true, 256, 64, 128>
-                        <<<(nrow - 1) / (256 / 64) + 1,
+                        <<<launch_grid((nrow - 1) / (256 / 64) + 1, 256),
                            256,
                            ssize,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -11111,7 +11111,7 @@ namespace rocalution
                 {
                     size_t ssize = 256 / 64 * 256 * (sizeof(int64_t) + sizeof(ValueType));
                     kernel_csr_compress_add_fill<true, 256, 64, 256>
-                        <<<(nrow - 1) / (256 / 64) + 1,
+                        <<<launch_grid((nrow - 1) / (256 / 64) + 1, 256),
                            256,
                            ssize,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -11131,7 +11131,7 @@ namespace rocalution
                 {
                     size_t ssize = 256 / 64 * 512 * (sizeof(int64_t) + sizeof(ValueType));
                     kernel_csr_compress_add_fill<true, 256, 64, 512>
-                        <<<(nrow - 1) / (256 / 64) + 1,
+                        <<<launch_grid((nrow - 1) / (256 / 64) + 1, 256),
                            256,
                            ssize,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -11151,7 +11151,7 @@ namespace rocalution
                 {
                     size_t ssize = 256 / 64 * 1024 * (sizeof(int64_t) + sizeof(ValueType));
                     kernel_csr_compress_add_fill<true, 256, 64, 1024>
-                        <<<(nrow - 1) / (256 / 64) + 1,
+                        <<<launch_grid((nrow - 1) / (256 / 64) + 1, 256),
                            256,
                            ssize,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -11171,7 +11171,7 @@ namespace rocalution
                 {
                     size_t ssize = 128 / 64 * 2048 * (sizeof(int64_t) + sizeof(ValueType));
                     kernel_csr_compress_add_fill<true, 128, 64, 2048>
-                        <<<(nrow - 1) / (128 / 64) + 1,
+                        <<<launch_grid((nrow - 1) / (128 / 64) + 1, 128),
                            128,
                            ssize,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -11191,7 +11191,7 @@ namespace rocalution
                 {
                     size_t ssize = 64 / 64 * 4096 * (sizeof(int64_t) + sizeof(ValueType));
                     kernel_csr_compress_add_fill<true, 64, 64, 4096>
-                        <<<(nrow - 1) / (64 / 64) + 1,
+                        <<<launch_grid((nrow - 1) / (64 / 64) + 1, 64),
                            64,
                            ssize,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -11225,7 +11225,7 @@ namespace rocalution
                 {
                     size_t ssize = 256 / 8 * 16 * (sizeof(int) + sizeof(ValueType));
                     kernel_csr_compress_add_fill<false, 256, 8, 16>
-                        <<<(nrow - 1) / (256 / 8) + 1,
+                        <<<launch_grid((nrow - 1) / (256 / 8) + 1, 256),
                            256,
                            ssize,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -11245,7 +11245,7 @@ namespace rocalution
                 {
                     size_t ssize = 256 / 16 * 32 * (sizeof(int) + sizeof(ValueType));
                     kernel_csr_compress_add_fill<false, 256, 16, 32>
-                        <<<(nrow - 1) / (256 / 16) + 1,
+                        <<<launch_grid((nrow - 1) / (256 / 16) + 1, 256),
                            256,
                            ssize,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -11265,7 +11265,7 @@ namespace rocalution
                 {
                     size_t ssize = 256 / 32 * 64 * (sizeof(int) + sizeof(ValueType));
                     kernel_csr_compress_add_fill<false, 256, 32, 64>
-                        <<<(nrow - 1) / (256 / 32) + 1,
+                        <<<launch_grid((nrow - 1) / (256 / 32) + 1, 256),
                            256,
                            ssize,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -11285,7 +11285,7 @@ namespace rocalution
                 {
                     size_t ssize = 256 / 64 * 128 * (sizeof(int) + sizeof(ValueType));
                     kernel_csr_compress_add_fill<false, 256, 64, 128>
-                        <<<(nrow - 1) / (256 / 64) + 1,
+                        <<<launch_grid((nrow - 1) / (256 / 64) + 1, 256),
                            256,
                            ssize,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -11305,7 +11305,7 @@ namespace rocalution
                 {
                     size_t ssize = 256 / 64 * 256 * (sizeof(int) + sizeof(ValueType));
                     kernel_csr_compress_add_fill<false, 256, 64, 256>
-                        <<<(nrow - 1) / (256 / 64) + 1,
+                        <<<launch_grid((nrow - 1) / (256 / 64) + 1, 256),
                            256,
                            ssize,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -11325,7 +11325,7 @@ namespace rocalution
                 {
                     size_t ssize = 256 / 64 * 512 * (sizeof(int) + sizeof(ValueType));
                     kernel_csr_compress_add_fill<false, 256, 64, 512>
-                        <<<(nrow - 1) / (256 / 64) + 1,
+                        <<<launch_grid((nrow - 1) / (256 / 64) + 1, 256),
                            256,
                            ssize,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -11345,7 +11345,7 @@ namespace rocalution
                 {
                     size_t ssize = 256 / 64 * 1024 * (sizeof(int) + sizeof(ValueType));
                     kernel_csr_compress_add_fill<false, 256, 64, 1024>
-                        <<<(nrow - 1) / (256 / 64) + 1,
+                        <<<launch_grid((nrow - 1) / (256 / 64) + 1, 256),
                            256,
                            ssize,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -11365,7 +11365,7 @@ namespace rocalution
                 {
                     size_t ssize = 128 / 64 * 2048 * (sizeof(int) + sizeof(ValueType));
                     kernel_csr_compress_add_fill<false, 128, 64, 2048>
-                        <<<(nrow - 1) / (128 / 64) + 1,
+                        <<<launch_grid((nrow - 1) / (128 / 64) + 1, 128),
                            128,
                            ssize,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -11385,7 +11385,7 @@ namespace rocalution
                 {
                     size_t ssize = 64 / 64 * 4096 * (sizeof(int) + sizeof(ValueType));
                     kernel_csr_compress_add_fill<false, 64, 64, 4096>
-                        <<<(nrow - 1) / (64 / 64) + 1,
+                        <<<launch_grid((nrow - 1) / (64 / 64) + 1, 64),
                            64,
                            ssize,
                            HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(

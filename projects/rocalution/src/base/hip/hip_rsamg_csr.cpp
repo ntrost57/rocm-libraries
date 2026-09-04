@@ -203,7 +203,7 @@ namespace rocalution
         if(global == false)
         {
             kernel_csr_rs_pmis_strong_influences<false, 256, 8>
-                <<<(this->nrow_ - 1) / (256 / 8) + 1,
+                <<<launch_grid((this->nrow_ - 1) / (256 / 8) + 1, 256),
                    256,
                    0,
                    HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -222,7 +222,7 @@ namespace rocalution
         else
         {
             kernel_csr_rs_pmis_strong_influences<true, 256, 8>
-                <<<(this->nrow_ - 1) / (256 / 8) + 1,
+                <<<launch_grid((this->nrow_ - 1) / (256 / 8) + 1, 256),
                    256,
                    0,
                    HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -304,7 +304,7 @@ namespace rocalution
         if(global == false)
         {
             kernel_csr_rs_pmis_correct_coarse<false, 256, 8>
-                <<<(this->nrow_ - 1) / (256 / 8) + 1,
+                <<<launch_grid((this->nrow_ - 1) / (256 / 8) + 1, 256),
                    256,
                    0,
                    HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -322,7 +322,7 @@ namespace rocalution
         else
         {
             kernel_csr_rs_pmis_correct_coarse<true, 256, 8>
-                <<<(this->nrow_ - 1) / (256 / 8) + 1,
+                <<<launch_grid((this->nrow_ - 1) / (256 / 8) + 1, 256),
                    256,
                    0,
                    HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -365,7 +365,7 @@ namespace rocalution
         if(global == false)
         {
             kernel_csr_rs_pmis_coarse_edges_to_fine<false, 256, 8>
-                <<<(this->nrow_ - 1) / (256 / 8) + 1,
+                <<<launch_grid((this->nrow_ - 1) / (256 / 8) + 1, 256),
                    256,
                    0,
                    HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -381,7 +381,7 @@ namespace rocalution
         else
         {
             kernel_csr_rs_pmis_coarse_edges_to_fine<true, 256, 8>
-                <<<(this->nrow_ - 1) / (256 / 8) + 1,
+                <<<launch_grid((this->nrow_ - 1) / (256 / 8) + 1, 256),
                    256,
                    0,
                    HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -939,7 +939,7 @@ namespace rocalution
         if(global == false)
         {
             kernel_csr_rs_extpi_interp_max<false, 256, 16>
-                <<<(this->nrow_ - 1) / (256 / 16) + 1,
+                <<<launch_grid((this->nrow_ - 1) / (256 / 16) + 1, 256),
                    256,
                    0,
                    HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
@@ -958,7 +958,7 @@ namespace rocalution
         else
         {
             kernel_csr_rs_extpi_interp_max<true, 256, 16>
-                <<<(this->nrow_ - 1) / (256 / 16) + 1,
+                <<<launch_grid((this->nrow_ - 1) / (256 / 16) + 1, 256),
                    256,
                    0,
                    HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(
