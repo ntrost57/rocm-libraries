@@ -37,7 +37,7 @@
         if(G == false)                                                          \
         {                                                                       \
             kernel_csr_rs_extpi_interp_nnz<false, BS, WS, HS>                   \
-                <<<(this->nrow_ - 1) / (BS / WS) + 1,                           \
+                <<<launch_grid((this->nrow_ - 1) / (BS / WS) + 1, BS),          \
                    BS,                                                          \
                    0,                                                           \
                    HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>( \
@@ -62,7 +62,7 @@
         else                                                                    \
         {                                                                       \
             kernel_csr_rs_extpi_interp_nnz<true, BS, WS, HS>                    \
-                <<<(this->nrow_ - 1) / (BS / WS) + 1,                           \
+                <<<launch_grid((this->nrow_ - 1) / (BS / WS) + 1, BS),          \
                    BS,                                                          \
                    0,                                                           \
                    HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>( \
@@ -92,7 +92,7 @@
         {                                                                        \
             size_t ssize = BS / WS * HS * (sizeof(int) + sizeof(ValueType));     \
             kernel_csr_rs_extpi_interp_fill<false, BS, WS, HS>                   \
-                <<<(this->nrow_ - 1) / (BS / WS) + 1,                            \
+                <<<launch_grid((this->nrow_ - 1) / (BS / WS) + 1, BS),           \
                    BS,                                                           \
                    ssize,                                                        \
                    HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(  \
@@ -129,7 +129,7 @@
         {                                                                        \
             size_t ssize = BS / WS * HS * (sizeof(int64_t) + sizeof(ValueType)); \
             kernel_csr_rs_extpi_interp_fill<true, BS, WS, HS>                    \
-                <<<(this->nrow_ - 1) / (BS / WS) + 1,                            \
+                <<<launch_grid((this->nrow_ - 1) / (BS / WS) + 1, BS),           \
                    BS,                                                           \
                    ssize,                                                        \
                    HIPSTREAM(_get_backend_descriptor()->HIP_stream_current)>>>(  \

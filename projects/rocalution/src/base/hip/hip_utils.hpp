@@ -1,5 +1,5 @@
 /* ************************************************************************
- * Copyright (C) 2018-2023 Advanced Micro Devices, Inc. All rights Reserved.
+ * Copyright (C) 2018-2026 Advanced Micro Devices, Inc. All rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,7 @@
 #include "backend_hip.hpp"
 #include "hip_atomics.hpp"
 
+#include <cstdint>
 #include <hip/hip_runtime.h>
 #include <rocblas/rocblas.h>
 #include <rocsparse/rocsparse.h>
@@ -742,6 +743,26 @@ namespace rocalution
         return std::complex<double>(__shfl_xor(std::real(val), i), __shfl_xor(std::imag(val), i));
     }
 #endif
+
+    // Work-items per grid dimension must fit into 32-bit, so a 1D grid caps
+    // out at UINT32_MAX/block_size blocks. Spill the remainder into y.
+    static inline dim3 launch_grid(int64_t nblocks, int block_size)
+    {
+        const int64_t max_x = UINT32_MAX / block_size;
+
+        if(nblocks <= max_x)
+        {
+            return dim3(static_cast<uint32_t>(nblocks));
+        }
+
+        return dim3(static_cast<uint32_t>(max_x),
+                    static_cast<uint32_t>((nblocks - 1) / max_x + 1));
+    }
+
+    static __device__ __forceinline__ int64_t global_block_id(void)
+    {
+        return static_cast<int64_t>(blockIdx.x) + static_cast<int64_t>(blockIdx.y) * gridDim.x;
+    }
 
 } // namespace rocalution
 
